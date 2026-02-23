@@ -46,7 +46,7 @@ const TEAMS = [
   { id: 52, name: "Jets",           city: "Winnipeg",     abbr: "WPG", color: "#041E42" },
   { id: 54, name: "Golden Knights", city: "Vegas",        abbr: "VGK", color: "#B4975A" },
   { id: 55, name: "Kraken",         city: "Seattle",      abbr: "SEA", color: "#99D9D9" },
-  { id: 56, name: "Hockey Club",    city: "Utah",         abbr: "UTA", color: "#69B3E7" },
+  { id: 59, name: "Mammoth",         city: "Utah",         abbr: "UTA", color: "#69B3E7" },
 ]
 
 const SEASONS   = ["20252026", "20242025"]
