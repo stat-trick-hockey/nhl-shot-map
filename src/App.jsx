@@ -28,11 +28,11 @@ function rankColor(r, total) {
   return "#F87171";
 }
 
-function vsAvg(val, avg, isPlayoffs) {
+function vsAvg(val, avg) {
   const d = ((val - avg) / avg) * 100;
-  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
-  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
-  return { sym: "●", color: "#FCD34D", txt: `≈ ${isPlayoffs ? "playoff" : "league"} avg` };
+  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs avg` };
+  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs avg` };
+  return { sym: "●", color: "#FCD34D", txt: "≈ playoff avg" };
 }
 
 const SEASONS    = ["20252026", "20242025"];
@@ -185,6 +185,65 @@ export default function NHLShotMap() {
 
   const hovZ = hovered ? details.find(d => d.area === hovered) : null;
 
+  // ── Archetype one-liner via Claude API ──────────────────────────────────
+  const [archetype, setArchetype]       = useState(null);
+  const [archetypeKey, setArchetypeKey] = useState(null);
+  const [archetypeLoading, setArchetypeLoading] = useState(false);
+
+  useEffect(() => {
+    if (!data || !totals || !team.name || team.name === "—") return;
+    const thisKey = `${teamId}_${season}_${gtype}`;
+    if (thisKey === archetypeKey) return; // already loaded for this selection
+
+    setArchetype(null);
+    setArchetypeLoading(true);
+
+    // Build a compact data summary to send to Claude
+    const topZones = [...details]
+      .sort((a, b) => b.sog - a.sog)
+      .slice(0, 5)
+      .map(z => `${z.area}: ${z.sog} sog, ${(z.shootingPctg*100).toFixed(1)}% sh%`)
+      .join("; ");
+
+    const prompt = `You are a hockey analyst. Based on this NHL team's shot location data, write a single punchy archetype one-liner (max 8 words, no punctuation at end) that captures HOW this team attacks. Focus on their style, not their success.
+
+Team: ${team.city} ${team.name}
+Season: ${season.slice(0,4)}-${season.slice(6)} ${gtype === 2 ? "Regular Season" : "Playoffs"}
+Total shots: ${totals.sog} (rank #${totals.sogRank} of ${rankTotal})
+Shooting %: ${(totals.shootingPctg*100).toFixed(1)}% (rank #${totals.shootingPctgRank} of ${rankTotal})
+Top shot zones: ${topZones}
+Forwards vs D shots: ${fwd?.sog ?? "?"} fwd / ${def?.sog ?? "?"} def
+
+Examples of good one-liners:
+- "High-danger hunters who finish in close"
+- "Perimeter shooters living on volume"
+- "Blue-line heavy with clinical forwards"
+- "Crease crashers with elite net-front presence"
+- "Outside-in attack with patient puck movement"
+
+Respond with ONLY the one-liner, nothing else.`;
+
+    fetch("https://api.anthropic.com/v1/messages", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        model: "claude-haiku-4-5-20251001",
+        max_tokens: 60,
+        messages: [{ role: "user", content: prompt }],
+      }),
+    })
+      .then(r => r.json())
+      .then(d => {
+        const text = d?.content?.[0]?.text?.trim();
+        if (text) {
+          setArchetype(text);
+          setArchetypeKey(thisKey);
+        }
+      })
+      .catch(() => {}) // fail silently
+      .finally(() => setArchetypeLoading(false));
+  }, [teamId, season, gtype, data]);
+
   const fetchedDate = db?.fetchedAt
     ? new Date(db.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : null;
@@ -238,7 +297,10 @@ export default function NHLShotMap() {
         tr:hover td{background:#10101C}
         .foot{padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #181828;background:#08080F}
         .fl{font-size:8px;letter-spacing:2px;color:#252535}
-        .no-data{padding:60px 20px;text-align:center;color:#333;font-size:10px;letter-spacing:3px}
+        .archetype{font-size:11px;letter-spacing:1px;color:#666;font-style:italic;margin-top:6px;min-height:16px}
+        .archetype.loaded{color:#999}
+        .arch-pulse{display:inline-block;width:40px;height:8px;background:linear-gradient(90deg,#1E1E2E 25%,#2A2A3E 50%,#1E1E2E 75%);background-size:200% 100%;animation:pulse 1.2s infinite;border-radius:2px}
+        @keyframes pulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .err{padding:40px 20px;text-align:center;color:#F87171;font-size:10px;letter-spacing:2px;line-height:1.8}
       `}</style>
 
@@ -248,8 +310,19 @@ export default function NHLShotMap() {
           <div className="eyebrow">NHL EDGE // SHOT LOCATION REPORT</div>
           <div className="city">{team.city}</div>
           <div className="teamname">{team.name || "Loading…"}</div>
-          
-          <img src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`} alt={team.name} onError={e => e.target.style.display="none"} style={{position:"absolute",right:"20px",top:"14px",width:"90px",height:"90px",objectFit:"contain",opacity:0.85}} />
+          <div className="archetype">
+            {archetypeLoading
+              ? <span className="arch-pulse" />
+              : archetype
+              ? <span className="loaded">"{archetype}"</span>
+              : null}
+          </div>
+          <img
+            src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`}
+            alt={team.name}
+            onError={e => e.target.style.display="none"}
+            style={{position:"absolute",right:"20px",top:"14px",width:"90px",height:"90px",objectFit:"contain",opacity:0.85}}
+          />
           <div className="badge">
             <div className="bdot" />
             {slbl} · {gtype === 2 ? "REGULAR SEASON" : "PLAYOFFS"}
@@ -399,9 +472,9 @@ export default function NHLShotMap() {
 
         {/* Totals */}
         {totals && (() => {
-          const sv = vsAvg(totals.sog, totals.sogLeagueAvg, gtype===3);
-          const gv = vsAvg(totals.goals, totals.goalsLeagueAvg, gtype===3);
-          const pv = vsAvg(totals.shootingPctg, totals.shootingPctgLeagueAvg, gtype===3);
+          const sv = vsAvg(totals.sog,           totals.sogLeagueAvg);
+          const gv = vsAvg(totals.goals,         totals.goalsLeagueAvg);
+          const pv = vsAvg(totals.shootingPctg,  totals.shootingPctgLeagueAvg);
           return (
             <div className="sg">
               {[
