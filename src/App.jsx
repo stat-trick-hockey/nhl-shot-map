@@ -32,7 +32,7 @@ function vsAvg(val, avg, isPlayoffs) {
   const d = ((val - avg) / avg) * 100;
   if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
   if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
-  return { sym: "●", color: "#FCD34D", txt: "≈ playoff avg" };
+  return { sym: "●", color: "#FCD34D", txt: `≈ ${isPlayoffs ? "playoff" : "league"} avg` };
 }
 
 const SEASONS    = ["20252026", "20242025"];
