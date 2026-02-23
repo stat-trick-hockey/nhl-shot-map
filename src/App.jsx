@@ -20,10 +20,11 @@ const ZONE_POS = {
   "R Corner":               { x:478, y:328, w:112, h:46 },
 };
 
-function rankColor(r) {
-  if (r <= 5)  return "#00E5A0";
-  if (r <= 10) return "#6EE7B7";
-  if (r <= 20) return "#FCD34D";
+function rankColor(r, total) {
+  const pct = r / total;
+  if (pct <= 0.15) return "#00E5A0";
+  if (pct <= 0.33) return "#6EE7B7";
+  if (pct <= 0.66) return "#FCD34D";
   return "#F87171";
 }
 
@@ -31,11 +32,110 @@ function vsAvg(val, avg) {
   const d = ((val - avg) / avg) * 100;
   if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs avg` };
   if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs avg` };
-  return { sym: "●", color: "#FCD34D", txt: "≈ league avg" };
+  return { sym: "●", color: "#FCD34D", txt: "≈ playoff avg" };
 }
 
 const SEASONS    = ["20252026", "20242025"];
 const GAME_TYPES = [{ v: 2, l: "Regular Season" }, { v: 3, l: "Playoffs" }];
+
+/**
+ * For a given season + game type, collect all teams that have data,
+ * then re-rank each metric from scratch using only those teams.
+ * Returns a map of { teamId -> { shotLocationDetails, shotLocationTotals } }
+ * with recalculated rank fields.
+ */
+function buildPlayoffRanks(db, season, gtype) {
+  if (!db) return null;
+
+  // Gather all teams that have data for this season/gtype
+  const playoffTeamData = [];
+  for (const [key, val] of Object.entries(db.data)) {
+    const [tid, s, g] = key.split("_");
+    if (s === season && parseInt(g) === gtype) {
+      playoffTeamData.push({ teamId: parseInt(tid), data: val });
+    }
+  }
+  if (playoffTeamData.length === 0) return null;
+
+  const n = playoffTeamData.length; // e.g. 16
+
+  // Helper: rank all teams by a numeric getter (higher = better rank 1)
+  function rerank(getter) {
+    const sorted = [...playoffTeamData]
+      .map(t => ({ teamId: t.teamId, val: getter(t.data) }))
+      .sort((a, b) => b.val - a.val);
+    const rankMap = {};
+    sorted.forEach((item, i) => { rankMap[item.teamId] = i + 1; });
+    return rankMap;
+  }
+
+  // --- shotLocationTotals ranks ---
+  const totalFields = [
+    { lc: "all", pos: "all", key: "sog",           rankField: "sogRank" },
+    { lc: "all", pos: "all", key: "goals",         rankField: "goalsRank" },
+    { lc: "all", pos: "all", key: "shootingPctg",  rankField: "shootingPctgRank" },
+    { lc: "all", pos: "F",   key: "sog",           rankField: "sogRank" },
+    { lc: "all", pos: "F",   key: "goals",         rankField: "goalsRank" },
+    { lc: "all", pos: "F",   key: "shootingPctg",  rankField: "shootingPctgRank" },
+    { lc: "all", pos: "D",   key: "sog",           rankField: "sogRank" },
+    { lc: "all", pos: "D",   key: "goals",         rankField: "goalsRank" },
+    { lc: "all", pos: "D",   key: "shootingPctg",  rankField: "shootingPctgRank" },
+  ];
+
+  const totalRankMaps = {};
+  for (const f of totalFields) {
+    const mapKey = `${f.lc}_${f.pos}_${f.rankField}`;
+    totalRankMaps[mapKey] = rerank(d => {
+      const row = d.shotLocationTotals?.find(t => t.locationCode === f.lc && t.position === f.pos);
+      return row?.[f.key] ?? 0;
+    });
+  }
+
+  // --- shotLocationDetails ranks (per area) ---
+  const areas = [...new Set(playoffTeamData.flatMap(t => t.data.shotLocationDetails.map(z => z.area)))];
+  const detailRankMaps = {};
+  for (const area of areas) {
+    for (const [field, rankField] of [["sog","sogRank"],["goals","goalsRank"],["shootingPctg","shootingPctgRank"]]) {
+      const mapKey = `${area}_${rankField}`;
+      detailRankMaps[mapKey] = rerank(d => {
+        const row = d.shotLocationDetails?.find(z => z.area === area);
+        return row?.[field] ?? 0;
+      });
+    }
+  }
+
+  // Build output: per-team re-ranked data
+  const result = { teamCount: n, byTeam: {} };
+  for (const { teamId, data } of playoffTeamData) {
+    // Re-rank totals
+    const newTotals = data.shotLocationTotals.map(row => {
+      const newRow = { ...row };
+      for (const f of totalFields) {
+        if (row.locationCode === f.lc && row.position === f.pos) {
+          const mapKey = `${f.lc}_${f.pos}_${f.rankField}`;
+          newRow[f.rankField] = totalRankMaps[mapKey][teamId] ?? row[f.rankField];
+        }
+      }
+      // Recalculate league avg from playoff teams only
+      newRow.sogLeagueAvg         = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.sog??0), 0) / n;
+      newRow.goalsLeagueAvg       = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.goals??0), 0) / n;
+      newRow.shootingPctgLeagueAvg= playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.shootingPctg??0), 0) / n;
+      return newRow;
+    });
+
+    // Re-rank details
+    const newDetails = data.shotLocationDetails.map(zone => ({
+      ...zone,
+      sogRank:          detailRankMaps[`${zone.area}_sogRank`]?.[teamId]          ?? zone.sogRank,
+      goalsRank:        detailRankMaps[`${zone.area}_goalsRank`]?.[teamId]        ?? zone.goalsRank,
+      shootingPctgRank: detailRankMaps[`${zone.area}_shootingPctgRank`]?.[teamId] ?? zone.shootingPctgRank,
+    }));
+
+    result.byTeam[teamId] = { ...data, shotLocationDetails: newDetails, shotLocationTotals: newTotals };
+  }
+
+  return result;
+}
 
 export default function NHLShotMap() {
   const [db, setDb]         = useState(null);       // full loaded JSON
@@ -66,8 +166,14 @@ export default function NHLShotMap() {
   const team    = teams.find(t => t.id === teamId) || { name: "—", city: "—", abbr: "—", color: "#888" };
   const tc      = team.color || "#888";
   const key     = `${teamId}_${season}_${gtype}`;
-  const data    = db?.data?.[key];
+  const rawData = db?.data?.[key];
   const slbl    = season ? `${season.slice(0,4)}–${season.slice(6)}` : "";
+
+  // In playoffs mode, recalculate ranks using only playoff teams
+  const playoffRanks  = gtype === 3 ? buildPlayoffRanks(db, season, gtype) : null;
+  const playoffCount  = playoffRanks?.teamCount ?? 32;
+  const data          = gtype === 3 ? playoffRanks?.byTeam?.[teamId] : rawData;
+  const rankTotal     = gtype === 3 ? playoffCount : 32;
 
   const details = data?.shotLocationDetails || [];
   const totals  = data?.shotLocationTotals?.find(t => t.locationCode === "all" && t.position === "all");
@@ -200,9 +306,9 @@ export default function NHLShotMap() {
               {hovZ && (
                 <div className="tip">
                   <div className="tip-h">{hovZ.area.toUpperCase()}</div>
-                  <div className="tip-r"><span>Shots on Goal</span><span className="tip-v">{hovZ.sog}<span className="tip-rk" style={{color:rankColor(hovZ.sogRank)}}>#{hovZ.sogRank}</span></span></div>
-                  <div className="tip-r"><span>Goals</span><span className="tip-v">{hovZ.goals}<span className="tip-rk" style={{color:rankColor(hovZ.goalsRank)}}>#{hovZ.goalsRank}</span></span></div>
-                  <div className="tip-r"><span>Shooting %</span><span className="tip-v">{(hovZ.shootingPctg*100).toFixed(1)}%<span className="tip-rk" style={{color:rankColor(hovZ.shootingPctgRank)}}>#{hovZ.shootingPctgRank}</span></span></div>
+                  <div className="tip-r"><span>Shots on Goal</span><span className="tip-v">{hovZ.sog}<span className="tip-rk" style={{color:rankColor(hovZ.sogRank, rankTotal)}}>#{hovZ.sogRank}</span></span></div>
+                  <div className="tip-r"><span>Goals</span><span className="tip-v">{hovZ.goals}<span className="tip-rk" style={{color:rankColor(hovZ.goalsRank, rankTotal)}}>#{hovZ.goalsRank}</span></span></div>
+                  <div className="tip-r"><span>Shooting %</span><span className="tip-v">{(hovZ.shootingPctg*100).toFixed(1)}%<span className="tip-rk" style={{color:rankColor(hovZ.shootingPctgRank, rankTotal)}}>#{hovZ.shootingPctgRank}</span></span></div>
                 </div>
               )}
 
@@ -258,9 +364,10 @@ export default function NHLShotMap() {
             </div>
 
             <div className="leg">
-              {[["#00E5A0","TOP 5"],["#6EE7B7","TOP 10"],["#FCD34D","MID"],["#F87171","BOTTOM"]].map(([c,l]) => (
+              {[["#00E5A0","TOP 15%"],["#6EE7B7","TOP 33%"],["#FCD34D","MID"],["#F87171","BOTTOM"]].map(([c,l]) => (
                 <div key={l} className="li"><div className="ld" style={{background:c}}/>{l}</div>
               ))}
+              {gtype === 3 && <div className="li" style={{color:"#333"}}>· of {rankTotal} teams</div>}
             </div>
           </>
         )}
@@ -277,11 +384,11 @@ export default function NHLShotMap() {
                   <tr key={z.area}>
                     <td>{z.area}</td>
                     <td>{z.sog}</td>
-                    <td style={{color:rankColor(z.sogRank)}}>#{z.sogRank}</td>
+                    <td style={{color:rankColor(z.sogRank, rankTotal)}}>#{z.sogRank}</td>
                     <td>{z.goals}</td>
-                    <td style={{color:rankColor(z.goalsRank)}}>#{z.goalsRank}</td>
+                    <td style={{color:rankColor(z.goalsRank, rankTotal)}}>#{z.goalsRank}</td>
                     <td>{(z.shootingPctg*100).toFixed(1)}%</td>
-                    <td style={{color:rankColor(z.shootingPctgRank)}}>#{z.shootingPctgRank}</td>
+                    <td style={{color:rankColor(z.shootingPctgRank, rankTotal)}}>#{z.shootingPctgRank}</td>
                   </tr>
                 ))}
               </tbody>
@@ -304,7 +411,7 @@ export default function NHLShotMap() {
                 <div className="sc" key={s.lbl}>
                   <div className="sn">{s.val}</div>
                   <div className="sl">{s.lbl}</div>
-                  <div className="ss" style={{color:rankColor(s.rank)}}>#{s.rank} of 32</div>
+                  <div className="ss" style={{color:rankColor(s.rank, rankTotal)}}>#{s.rank} of {rankTotal}</div>
                   <div className="ss" style={{color:s.v.color,fontSize:"8px",marginTop:"2px"}}>{s.v.sym} {s.v.txt}</div>
                 </div>
               ))}
@@ -321,7 +428,7 @@ export default function NHLShotMap() {
                 {[["Shots",d.sog,d.sogRank],["Goals",d.goals,d.goalsRank],["Sh%",`${(d.shootingPctg*100).toFixed(1)}%`,d.shootingPctgRank]].map(([k,v,r]) => (
                   <div className="pr" key={k}>
                     <span className="pk">{k}</span>
-                    <span className="pv">{v}<span className="prk" style={{color:rankColor(r)}}>#{r}</span></span>
+                    <span className="pv">{v}<span className="prk" style={{color:rankColor(r, rankTotal)}}>#{r}</span></span>
                   </div>
                 ))}
               </div>
