@@ -137,6 +137,85 @@ function buildPlayoffRanks(db, season, gtype) {
   return result;
 }
 
+function deriveArchetype(details, totals, fwd, def, rankTotal) {
+  if (!details?.length || !totals) return null;
+
+  const get = area => details.find(d => d.area === area);
+
+  // Key zone volumes
+  const lowSlot    = get("Low Slot")?.sog    ?? 0;
+  const highSlot   = get("High Slot")?.sog   ?? 0;
+  const crease     = get("Crease")?.sog      ?? 0;
+  const lCircle    = get("L Circle")?.sog    ?? 0;
+  const rCircle    = get("R Circle")?.sog    ?? 0;
+  const lPoint     = get("L Point")?.sog     ?? 0;
+  const rPoint     = get("R Point")?.sog     ?? 0;
+  const centerPt   = get("Center Point")?.sog ?? 0;
+  const lNetSide   = get("L Net Side")?.sog  ?? 0;
+  const rNetSide   = get("R Net Side")?.sog  ?? 0;
+
+  const total      = totals.sog || 1;
+  const shPctg     = totals.shootingPctg;
+  const sogRank    = totals.sogRank;
+  const shRank     = totals.shootingPctgRank;
+  const defShots   = def?.sog ?? 0;
+  const fwdShots   = fwd?.sog ?? 1;
+
+  // Derived ratios
+  const highDanger   = (lowSlot + crease + lNetSide + rNetSide) / total;
+  const slotHeavy    = (lowSlot + highSlot) / total;
+  const pointHeavy   = (lPoint + rPoint + centerPt) / total;
+  const circleHeavy  = (lCircle + rCircle) / total;
+  const defRatio     = defShots / (fwdShots + defShots);
+  const creaseRate   = crease / total;
+  const isHighVol    = sogRank <= Math.ceil(rankTotal * 0.25);
+  const isLowVol     = sogRank >= Math.ceil(rankTotal * 0.75);
+  const isClinical   = shRank <= Math.ceil(rankTotal * 0.25);
+  const isWild       = shRank >= Math.ceil(rankTotal * 0.75);
+
+  // Classification logic — most specific match wins
+  if (creaseRate > 0.06 && highDanger > 0.55 && isClinical)
+    return "Crease crashers with elite net-front finishing";
+  if (creaseRate > 0.06 && highDanger > 0.55)
+    return "Net-front heavy with relentless crease pressure";
+  if (highDanger > 0.58 && isHighVol)
+    return "High-danger hunters who live in the slot";
+  if (highDanger > 0.58 && isClinical)
+    return "Compact attack — few shots, maximum danger";
+  if (highDanger > 0.55)
+    return "High-danger focused with inside-out attack";
+  if (pointHeavy > 0.22 && defRatio > 0.30 && isClinical)
+    return "Blue-line snipers with clinical D-zone shots";
+  if (pointHeavy > 0.22 && defRatio > 0.30)
+    return "Blue-line heavy with active offensive D";
+  if (pointHeavy > 0.20 && isHighVol)
+    return "Point shot volume team — traffic and tips";
+  if (circleHeavy > 0.22 && isClinical)
+    return "Circle snipers who pick their spots";
+  if (circleHeavy > 0.22 && isHighVol)
+    return "Wide attack with heavy circle shot volume";
+  if (circleHeavy > 0.20)
+    return "Outside-in attack through the circles";
+  if (slotHeavy > 0.48 && isHighVol && isClinical)
+    return "Slot dominators — volume and efficiency";
+  if (slotHeavy > 0.48 && isHighVol)
+    return "Slot-heavy shooters living on volume";
+  if (slotHeavy > 0.48 && isClinical)
+    return "Structured attack — direct routes to the slot";
+  if (isHighVol && isWild)
+    return "Shoot-first mentality — quantity over quality";
+  if (isLowVol && isClinical)
+    return "Patient and precise — low volume, high impact";
+  if (isHighVol && isClinical)
+    return "Elite attack — volume and efficiency combined";
+  if (isHighVol)
+    return "High-tempo offence built on shot generation";
+  if (isClinical)
+    return "Selective attackers who make every shot count";
+
+  return "Balanced attack with no clear signature zone";
+}
+
 export default function NHLShotMap() {
   const [db, setDb]         = useState(null);       // full loaded JSON
   const [loadErr, setLoadErr] = useState(null);
@@ -185,64 +264,8 @@ export default function NHLShotMap() {
 
   const hovZ = hovered ? details.find(d => d.area === hovered) : null;
 
-  // ── Archetype one-liner via Claude API ──────────────────────────────────
-  const [archetype, setArchetype]       = useState(null);
-  const [archetypeKey, setArchetypeKey] = useState(null);
-  const [archetypeLoading, setArchetypeLoading] = useState(false);
-
-  useEffect(() => {
-    if (!data || !totals || !team.name || team.name === "—") return;
-    const thisKey = `${teamId}_${season}_${gtype}`;
-    if (thisKey === archetypeKey) return; // already loaded for this selection
-
-    setArchetype(null);
-    setArchetypeLoading(true);
-
-    // Build a compact data summary to send to Claude
-    const topZones = [...details]
-      .sort((a, b) => b.sog - a.sog)
-      .slice(0, 5)
-      .map(z => `${z.area}: ${z.sog} sog, ${(z.shootingPctg*100).toFixed(1)}% sh%`)
-      .join("; ");
-
-    const prompt = `You are a hockey analyst. Based on this NHL team's shot location data, write a single punchy archetype one-liner (max 8 words, no punctuation at end) that captures HOW this team attacks. Focus on their style, not their success.
-
-Team: ${team.city} ${team.name}
-Season: ${season.slice(0,4)}-${season.slice(6)} ${gtype === 2 ? "Regular Season" : "Playoffs"}
-Total shots: ${totals.sog} (rank #${totals.sogRank} of ${rankTotal})
-Shooting %: ${(totals.shootingPctg*100).toFixed(1)}% (rank #${totals.shootingPctgRank} of ${rankTotal})
-Top shot zones: ${topZones}
-Forwards vs D shots: ${fwd?.sog ?? "?"} fwd / ${def?.sog ?? "?"} def
-
-Examples of good one-liners:
-- "High-danger hunters who finish in close"
-- "Perimeter shooters living on volume"
-- "Blue-line heavy with clinical forwards"
-- "Crease crashers with elite net-front presence"
-- "Outside-in attack with patient puck movement"
-
-Respond with ONLY the one-liner, nothing else.`;
-
-    fetch("https://api.anthropic.com/v1/messages", {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        model: "claude-haiku-4-5-20251001",
-        max_tokens: 60,
-        messages: [{ role: "user", content: prompt }],
-      }),
-    })
-      .then(r => r.json())
-      .then(d => {
-        const text = d?.content?.[0]?.text?.trim();
-        if (text) {
-          setArchetype(text);
-          setArchetypeKey(thisKey);
-        }
-      })
-      .catch(() => {}) // fail silently
-      .finally(() => setArchetypeLoading(false));
-  }, [teamId, season, gtype, data]);
+  // ── Archetype one-liner from data ───────────────────────────────────────
+  const archetype = deriveArchetype(details, totals, fwd, def, rankTotal);
 
   const fetchedDate = db?.fetchedAt
     ? new Date(db.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
@@ -299,8 +322,6 @@ Respond with ONLY the one-liner, nothing else.`;
         .fl{font-size:8px;letter-spacing:2px;color:#252535}
         .archetype{font-size:11px;letter-spacing:1px;color:#666;font-style:italic;margin-top:6px;min-height:16px}
         .archetype.loaded{color:#999}
-        .arch-pulse{display:inline-block;width:40px;height:8px;background:linear-gradient(90deg,#1E1E2E 25%,#2A2A3E 50%,#1E1E2E 75%);background-size:200% 100%;animation:pulse 1.2s infinite;border-radius:2px}
-        @keyframes pulse{0%{background-position:200% 0}100%{background-position:-200% 0}}
         .err{padding:40px 20px;text-align:center;color:#F87171;font-size:10px;letter-spacing:2px;line-height:1.8}
       `}</style>
 
@@ -311,11 +332,7 @@ Respond with ONLY the one-liner, nothing else.`;
           <div className="city">{team.city}</div>
           <div className="teamname">{team.name || "Loading…"}</div>
           <div className="archetype">
-            {archetypeLoading
-              ? <span className="arch-pulse" />
-              : archetype
-              ? <span className="loaded">"{archetype}"</span>
-              : null}
+            {archetype && <span className="loaded">"{archetype}"</span>}
           </div>
           <img
             src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`}
