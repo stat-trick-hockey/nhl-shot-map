@@ -248,7 +248,8 @@ export default function NHLShotMap() {
           <div className="eyebrow">NHL EDGE // SHOT LOCATION REPORT</div>
           <div className="city">{team.city}</div>
           <div className="teamname">{team.name || "Loading…"}</div>
-          <div className="abbr-bg">{team.abbr}</div>
+          
+          <img src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`} alt={team.name} onError={e => e.target.style.display="none"} style={{position:"absolute",right:"20px",top:"14px",width:"90px",height:"90px",objectFit:"contain",opacity:0.85}} />
           <div className="badge">
             <div className="bdot" />
             {slbl} · {gtype === 2 ? "REGULAR SEASON" : "PLAYOFFS"}
