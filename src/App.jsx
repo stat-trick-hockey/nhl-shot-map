@@ -28,10 +28,10 @@ function rankColor(r, total) {
   return "#F87171";
 }
 
-function vsAvg(val, avg) {
+function vsAvg(val, avg, isPlayoffs) {
   const d = ((val - avg) / avg) * 100;
-  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs avg` };
-  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs avg` };
+  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
+  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
   return { sym: "●", color: "#FCD34D", txt: "≈ playoff avg" };
 }
 
@@ -398,9 +398,9 @@ export default function NHLShotMap() {
 
         {/* Totals */}
         {totals && (() => {
-          const sv = vsAvg(totals.sog,           totals.sogLeagueAvg);
-          const gv = vsAvg(totals.goals,         totals.goalsLeagueAvg);
-          const pv = vsAvg(totals.shootingPctg,  totals.shootingPctgLeagueAvg);
+          const sv = vsAvg(totals.sog, totals.sogLeagueAvg, gtype===3);
+          const gv = vsAvg(totals.goals, totals.goalsLeagueAvg, gtype===3);
+          const pv = vsAvg(totals.shootingPctg, totals.shootingPctgLeagueAvg, gtype===3);
           return (
             <div className="sg">
               {[
