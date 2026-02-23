@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-02-23T18:21:47.123Z",
+  "fetchedAt": "2026-02-23T18:39:20.748Z",
   "teams": [
     {
       "id": 1,
@@ -13,14 +13,14 @@
       "name": "Islanders",
       "city": "New York",
       "abbr": "NYI",
-      "color": "#00539B"
+      "color": "#1A7BC4"
     },
     {
       "id": 3,
       "name": "Rangers",
       "city": "New York",
       "abbr": "NYR",
-      "color": "#0038A8"
+      "color": "#1A5CC4"
     },
     {
       "id": 4,
@@ -48,14 +48,14 @@
       "name": "Sabres",
       "city": "Buffalo",
       "abbr": "BUF",
-      "color": "#003087"
+      "color": "#1A6BC4"
     },
     {
       "id": 8,
       "name": "Canadiens",
       "city": "Montréal",
       "abbr": "MTL",
-      "color": "#AF1E2D"
+      "color": "#E03040"
     },
     {
       "id": 9,
@@ -69,7 +69,7 @@
       "name": "Maple Leafs",
       "city": "Toronto",
       "abbr": "TOR",
-      "color": "#00205B"
+      "color": "#1A6BC4"
     },
     {
       "id": 12,
@@ -83,21 +83,21 @@
       "name": "Panthers",
       "city": "Florida",
       "abbr": "FLA",
-      "color": "#041E42"
+      "color": "#1A5CC4"
     },
     {
       "id": 14,
       "name": "Lightning",
       "city": "Tampa Bay",
       "abbr": "TBL",
-      "color": "#002868"
+      "color": "#1A6BC4"
     },
     {
       "id": 15,
       "name": "Capitals",
       "city": "Washington",
       "abbr": "WSH",
-      "color": "#041E42"
+      "color": "#1A5CC4"
     },
     {
       "id": 16,
@@ -125,7 +125,7 @@
       "name": "Blues",
       "city": "St. Louis",
       "abbr": "STL",
-      "color": "#002F87"
+      "color": "#2A5FBF"
     },
     {
       "id": 20,
@@ -139,7 +139,7 @@
       "name": "Avalanche",
       "city": "Colorado",
       "abbr": "COL",
-      "color": "#6F263D"
+      "color": "#A8385A"
     },
     {
       "id": 22,
@@ -153,7 +153,7 @@
       "name": "Canucks",
       "city": "Vancouver",
       "abbr": "VAN",
-      "color": "#00205B"
+      "color": "#1A6BC4"
     },
     {
       "id": 24,
@@ -167,7 +167,7 @@
       "name": "Stars",
       "city": "Dallas",
       "abbr": "DAL",
-      "color": "#006847"
+      "color": "#00A06B"
     },
     {
       "id": 26,
@@ -181,28 +181,28 @@
       "name": "Sharks",
       "city": "San Jose",
       "abbr": "SJS",
-      "color": "#006D75"
+      "color": "#00A0AD"
     },
     {
       "id": 29,
       "name": "Blue Jackets",
       "city": "Columbus",
       "abbr": "CBJ",
-      "color": "#002654"
+      "color": "#1A6BC4"
     },
     {
       "id": 30,
       "name": "Wild",
       "city": "Minnesota",
       "abbr": "MIN",
-      "color": "#154734"
+      "color": "#1A7A52"
     },
     {
       "id": 52,
       "name": "Jets",
       "city": "Winnipeg",
       "abbr": "WPG",
-      "color": "#041E42"
+      "color": "#1A5CC4"
     },
     {
       "id": 54,
