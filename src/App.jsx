@@ -142,78 +142,205 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
 
   const get = area => details.find(d => d.area === area);
 
-  // Key zone volumes
-  const lowSlot    = get("Low Slot")?.sog    ?? 0;
-  const highSlot   = get("High Slot")?.sog   ?? 0;
-  const crease     = get("Crease")?.sog      ?? 0;
-  const lCircle    = get("L Circle")?.sog    ?? 0;
-  const rCircle    = get("R Circle")?.sog    ?? 0;
-  const lPoint     = get("L Point")?.sog     ?? 0;
-  const rPoint     = get("R Point")?.sog     ?? 0;
-  const centerPt   = get("Center Point")?.sog ?? 0;
-  const lNetSide   = get("L Net Side")?.sog  ?? 0;
-  const rNetSide   = get("R Net Side")?.sog  ?? 0;
+  const lowSlot   = get("Low Slot")?.sog     ?? 0;
+  const highSlot  = get("High Slot")?.sog    ?? 0;
+  const crease    = get("Crease")?.sog       ?? 0;
+  const lCircle   = get("L Circle")?.sog     ?? 0;
+  const rCircle   = get("R Circle")?.sog     ?? 0;
+  const lPoint    = get("L Point")?.sog      ?? 0;
+  const rPoint    = get("R Point")?.sog      ?? 0;
+  const centerPt  = get("Center Point")?.sog ?? 0;
+  const lNetSide  = get("L Net Side")?.sog   ?? 0;
+  const rNetSide  = get("R Net Side")?.sog   ?? 0;
+  const outsideL  = get("Outside L")?.sog    ?? 0;
+  const outsideR  = get("Outside R")?.sog    ?? 0;
+  const behindNet = get("Behind the Net")?.sog ?? 0;
+  const lCorner   = get("L Corner")?.sog     ?? 0;
+  const rCorner   = get("R Corner")?.sog     ?? 0;
+  const beyondRed = get("Beyond Red Line")?.sog ?? 0;
+  const offNeutral= get("Offensive Neutral Zone")?.sog ?? 0;
 
-  const total      = totals.sog || 1;
-  const shPctg     = totals.shootingPctg;
-  const sogRank    = totals.sogRank;
-  const shRank     = totals.shootingPctgRank;
-  const defShots   = def?.sog ?? 0;
-  const fwdShots   = fwd?.sog ?? 1;
+  const total     = totals.sog || 1;
+  const sogRank   = totals.sogRank;
+  const shRank    = totals.shootingPctgRank;
+  const goalsRank = totals.goalsRank;
+  const defShots  = def?.sog  ?? 0;
+  const fwdShots  = fwd?.sog  ?? 1;
+  const defShPctg = def?.shootingPctg  ?? 0;
+  const fwdShPctg = fwd?.shootingPctg  ?? 0;
 
-  // Derived ratios
-  const highDanger   = (lowSlot + crease + lNetSide + rNetSide) / total;
-  const slotHeavy    = (lowSlot + highSlot) / total;
-  const pointHeavy   = (lPoint + rPoint + centerPt) / total;
-  const circleHeavy  = (lCircle + rCircle) / total;
-  const defRatio     = defShots / (fwdShots + defShots);
-  const creaseRate   = crease / total;
-  const isHighVol    = sogRank <= Math.ceil(rankTotal * 0.25);
-  const isLowVol     = sogRank >= Math.ceil(rankTotal * 0.75);
-  const isClinical   = shRank <= Math.ceil(rankTotal * 0.25);
-  const isWild       = shRank >= Math.ceil(rankTotal * 0.75);
+  // Zone ratios
+  const highDanger  = (lowSlot + crease + lNetSide + rNetSide) / total;
+  const slotShare   = (lowSlot + highSlot) / total;
+  const pointShare  = (lPoint + rPoint + centerPt) / total;
+  const circleShare = (lCircle + rCircle) / total;
+  const perimShare  = (outsideL + outsideR + beyondRed + offNeutral) / total;
+  const netFront    = (crease + lNetSide + rNetSide) / total;
+  const cornerShare = (lCorner + rCorner + behindNet) / total;
+  const defRatio    = defShots / (fwdShots + defShots);
+  const creaseRate  = crease / total;
+  const lowSlotRate = lowSlot / total;
 
-  // Classification logic — most specific match wins
-  if (creaseRate > 0.06 && highDanger > 0.55 && isClinical)
-    return "Crease crashers with elite net-front finishing";
+  // Rank bands (proportional to pool size)
+  const top10  = r => r <= Math.ceil(rankTotal * 0.10);
+  const top25  = r => r <= Math.ceil(rankTotal * 0.25);
+  const top40  = r => r <= Math.ceil(rankTotal * 0.40);
+  const bot25  = r => r >= Math.floor(rankTotal * 0.75);
+  const bot10  = r => r >= Math.floor(rankTotal * 0.90);
+  const mid    = r => !top25(r) && !bot25(r);
+
+  const elite     = top10(sogRank) && top10(shRank);
+  const highVol   = top25(sogRank);
+  const lowVol    = bot25(sogRank);
+  const clinical  = top25(shRank);
+  const vClinical = top10(shRank);
+  const wild      = bot25(shRank);
+  const vWild     = bot10(shRank);
+  const prolific  = top25(goalsRank);
+  const starved   = bot25(goalsRank);
+  const defDriven = defRatio > 0.32;
+  const fwdDriven = defRatio < 0.22;
+
+  // ── Elite combos ──────────────────────────────────────────────────────
+  if (elite && highDanger > 0.55)
+    return { text: "Unstoppable · Elite danger from everywhere", icon: "⚡" };
+  if (elite && slotShare > 0.48)
+    return { text: "Slot dominators · Volume meets precision", icon: "🎯" };
+  if (elite)
+    return { text: "Complete attack · No weaknesses", icon: "👑" };
+
+  // ── Crease & net-front ─────────────────────────────────────────────────
+  if (creaseRate > 0.07 && netFront > 0.14 && vClinical)
+    return { text: "Net-front assassins · Punish every scramble", icon: "🔪" };
+  if (creaseRate > 0.07 && netFront > 0.14 && highVol)
+    return { text: "Crease crashers · Swarm the paint relentlessly", icon: "💥" };
+  if (creaseRate > 0.06 && highDanger > 0.55 && clinical)
+    return { text: "High-danger hunters · Finish in tight", icon: "🎯" };
   if (creaseRate > 0.06 && highDanger > 0.55)
-    return "Net-front heavy with relentless crease pressure";
-  if (highDanger > 0.58 && isHighVol)
-    return "High-danger hunters who live in the slot";
-  if (highDanger > 0.58 && isClinical)
-    return "Compact attack — few shots, maximum danger";
-  if (highDanger > 0.55)
-    return "High-danger focused with inside-out attack";
-  if (pointHeavy > 0.22 && defRatio > 0.30 && isClinical)
-    return "Blue-line snipers with clinical D-zone shots";
-  if (pointHeavy > 0.22 && defRatio > 0.30)
-    return "Blue-line heavy with active offensive D";
-  if (pointHeavy > 0.20 && isHighVol)
-    return "Point shot volume team — traffic and tips";
-  if (circleHeavy > 0.22 && isClinical)
-    return "Circle snipers who pick their spots";
-  if (circleHeavy > 0.22 && isHighVol)
-    return "Wide attack with heavy circle shot volume";
-  if (circleHeavy > 0.20)
-    return "Outside-in attack through the circles";
-  if (slotHeavy > 0.48 && isHighVol && isClinical)
-    return "Slot dominators — volume and efficiency";
-  if (slotHeavy > 0.48 && isHighVol)
-    return "Slot-heavy shooters living on volume";
-  if (slotHeavy > 0.48 && isClinical)
-    return "Structured attack — direct routes to the slot";
-  if (isHighVol && isWild)
-    return "Shoot-first mentality — quantity over quality";
-  if (isLowVol && isClinical)
-    return "Patient and precise — low volume, high impact";
-  if (isHighVol && isClinical)
-    return "Elite attack — volume and efficiency combined";
-  if (isHighVol)
-    return "High-tempo offence built on shot generation";
-  if (isClinical)
-    return "Selective attackers who make every shot count";
+    return { text: "Net-front heavy · Life in the crease", icon: "🏒" };
+  if (netFront > 0.13 && wild)
+    return { text: "Traffic seekers · Quantity game near the net", icon: "📦" };
 
-  return "Balanced attack with no clear signature zone";
+  // ── Slot-centric ───────────────────────────────────────────────────────
+  if (lowSlotRate > 0.30 && vClinical)
+    return { text: "Low slot snipers · Make every chance count", icon: "🎯" };
+  if (lowSlotRate > 0.30 && highVol)
+    return { text: "Slot-hungry · Shoot first, ask later", icon: "🔥" };
+  if (lowSlotRate > 0.28 && clinical)
+    return { text: "Direct and deadly · Straight to the slot", icon: "⚡" };
+  if (slotShare > 0.50 && highVol && wild)
+    return { text: "Volume merchants · Flood the slot", icon: "📊" };
+  if (slotShare > 0.48 && clinical)
+    return { text: "Structured attack · Earn the slot every time", icon: "🧩" };
+  if (slotShare > 0.48)
+    return { text: "Slot-first system · Everything runs through centre", icon: "🏒" };
+
+  // ── High danger broad ──────────────────────────────────────────────────
+  if (highDanger > 0.58 && highVol && clinical)
+    return { text: "Danger zone addicts · High volume, high quality", icon: "🔥" };
+  if (highDanger > 0.58 && highVol)
+    return { text: "Inside-out attack · Earn it the hard way", icon: "💪" };
+  if (highDanger > 0.58 && clinical)
+    return { text: "Selective but lethal · Choose danger, convert", icon: "🎯" };
+  if (highDanger > 0.55 && lowVol)
+    return { text: "Opportunists · Wait for danger, then strike", icon: "🦊" };
+  if (highDanger > 0.55)
+    return { text: "High-danger focused · Willing to pay the price", icon: "💥" };
+
+  // ── Blue-line / point shot heavy ───────────────────────────────────────
+  if (pointShare > 0.24 && defDriven && vClinical)
+    return { text: "D-zone snipers · Pinching blueline killers", icon: "🎯" };
+  if (pointShare > 0.24 && defDriven && highVol)
+    return { text: "Blue-line blitz · Active D driving offence", icon: "🔵" };
+  if (pointShare > 0.22 && defDriven && clinical)
+    return { text: "Point shot precision · Smart D with north-south reach", icon: "📐" };
+  if (pointShare > 0.22 && defDriven)
+    return { text: "Blue-line heavy · Defenders carry the load", icon: "🔵" };
+  if (pointShare > 0.22 && highVol)
+    return { text: "Point shot barrage · Screen and tip everything", icon: "🌊" };
+  if (pointShare > 0.20 && clinical)
+    return { text: "Long-range specialists · Make distance shots count", icon: "🎯" };
+  if (pointShare > 0.20)
+    return { text: "Perimeter to slot · Point shots feeding chaos", icon: "🔀" };
+
+  // ── Circle-heavy ───────────────────────────────────────────────────────
+  if (circleShare > 0.24 && vClinical)
+    return { text: "Circle snipers · Ice-cold from the dots", icon: "❄️" };
+  if (circleShare > 0.24 && highVol && clinical)
+    return { text: "Faceoff circle threats · Wide and accurate", icon: "🎯" };
+  if (circleShare > 0.22 && highVol)
+    return { text: "Wide-angle offence · Circles as the launchpad", icon: "🔄" };
+  if (circleShare > 0.22 && clinical)
+    return { text: "Patient outside-in · Pick the spot, hit it", icon: "🧊" };
+  if (circleShare > 0.20 && wild)
+    return { text: "Spray and pray from the circles", icon: "🌀" };
+  if (circleShare > 0.20)
+    return { text: "Outside-in system · Circle shots feeding the slot", icon: "↩️" };
+
+  // ── Perimeter / long range ─────────────────────────────────────────────
+  if (perimShare > 0.12 && highVol && wild)
+    return { text: "Long-range spammers · Quantity from distance", icon: "📡" };
+  if (perimShare > 0.12 && highVol)
+    return { text: "Perimeter volume team · Force rebounds everywhere", icon: "🌊" };
+  if (perimShare > 0.10 && clinical)
+    return { text: "Long-range precision · Surprising from distance", icon: "🎯" };
+
+  // ── Corner / behind net ────────────────────────────────────────────────
+  if (cornerShare > 0.06 && highDanger > 0.50)
+    return { text: "Cycle masters · Work the corners, cash in close", icon: "🔄" };
+  if (cornerShare > 0.06)
+    return { text: "Grind it out · Board battles feeding the crease", icon: "💪" };
+
+  // ── Volume extremes ────────────────────────────────────────────────────
+  if (highVol && vClinical)
+    return { text: "Offensive powerhouse · Generate and convert", icon: "⚡" };
+  if (highVol && vWild)
+    return { text: "Shoot-first mentality · Quantity over quality", icon: "🌀" };
+  if (highVol && clinical)
+    return { text: "High-tempo machine · Volume with purpose", icon: "🔥" };
+  if (highVol && wild)
+    return { text: "All gas no brakes · Shots from everywhere", icon: "💨" };
+  if (highVol)
+    return { text: "Volume-driven attack · Keep the goalie busy", icon: "📊" };
+
+  // ── Low volume ─────────────────────────────────────────────────────────
+  if (lowVol && vClinical && prolific)
+    return { text: "Less is more · Ruthless efficiency", icon: "🔪" };
+  if (lowVol && clinical)
+    return { text: "Patient and precise · Low volume, high impact", icon: "🧊" };
+  if (lowVol && wild && starved)
+    return { text: "Offensively challenged · Rare shots, rare goals", icon: "😬" };
+  if (lowVol && starved)
+    return { text: "Quiet attack · Struggle to generate and convert", icon: "📉" };
+  if (lowVol)
+    return { text: "Conservative offence · Choose moments carefully", icon: "🕰️" };
+
+  // ── D vs F driven ──────────────────────────────────────────────────────
+  if (defDriven && clinical && prolific)
+    return { text: "D-zone excellence · Defenders make the difference", icon: "🛡️" };
+  if (defDriven && highVol)
+    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
+  if (fwdDriven && vClinical)
+    return { text: "Forward-driven · Elite scorers do the heavy lifting", icon: "⭐" };
+  if (fwdDriven && highVol)
+    return { text: "Forward-centric machine · D stay home", icon: "🏹" };
+
+  // ── Efficiency combos ──────────────────────────────────────────────────
+  if (vClinical && prolific)
+    return { text: "Clinical finishers · Make every chance pay", icon: "💎" };
+  if (vClinical)
+    return { text: "Precision attack · Ice water in their veins", icon: "❄️" };
+  if (clinical && prolific)
+    return { text: "Efficient and dangerous · Quality over quantity", icon: "🎯" };
+  if (clinical)
+    return { text: "Selective shooters · Make every shot count", icon: "🧠" };
+  if (vWild && highVol)
+    return { text: "Chaotic offence · Shoot everything, score little", icon: "🎲" };
+  if (wild)
+    return { text: "Streaky attack · Hot and cold in waves", icon: "🌊" };
+
+  // ── Fallback ───────────────────────────────────────────────────────────
+  return { text: "Balanced attack · No clear signature zone", icon: "⚖️" };
 }
 
 export default function NHLShotMap() {
@@ -320,8 +447,9 @@ export default function NHLShotMap() {
         tr:hover td{background:#10101C}
         .foot{padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #181828;background:#08080F}
         .fl{font-size:8px;letter-spacing:2px;color:#252535}
-        .archetype{font-size:11px;letter-spacing:1px;color:#666;font-style:italic;margin-top:6px;min-height:16px}
-        .archetype.loaded{color:#999}
+        .archetype{margin-top:10px;display:inline-flex;align-items:center;gap:8px;background:${tc}18;border:1px solid ${tc}33;border-radius:3px;padding:5px 10px}
+        .arch-icon{font-size:13px;line-height:1}
+        .arch-text{font-size:11px;letter-spacing:1px;color:${tc};font-style:italic;}
         .err{padding:40px 20px;text-align:center;color:#F87171;font-size:10px;letter-spacing:2px;line-height:1.8}
       `}</style>
 
@@ -332,7 +460,10 @@ export default function NHLShotMap() {
           <div className="city">{team.city}</div>
           <div className="teamname">{team.name || "Loading…"}</div>
           <div className="archetype">
-            {archetype && <span className="loaded">"{archetype}"</span>}
+            {archetype && <>
+              <span className="arch-icon">{archetype.icon}</span>
+              <span className="arch-text">{archetype.text}</span>
+            </>}
           </div>
           <img
             src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`}
