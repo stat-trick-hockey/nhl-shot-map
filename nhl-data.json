@@ -1,9 +1,5 @@
 {
-<<<<<<< HEAD
-  "fetchedAt": "2026-02-24T03:04:03.288Z",
-=======
-  "fetchedAt": "2026-02-24T02:17:00.027Z",
->>>>>>> 1c47d77 (fix: zone layout spread)
+  "fetchedAt": "2026-02-24T03:14:38.276Z",
   "teams": [
     {
       "id": 1,
