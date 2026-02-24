@@ -405,6 +405,9 @@ export default function NHLShotMap() {
 
   const archetype = deriveArchetype(details, totals, fwd, def, rankTotal);
 
+  // Stat leaders for this team/season/gtype
+  const leaders = db?.leaders?.[key] ?? null;
+
   const fetchedDate = db?.fetchedAt
     ? new Date(db.fetchedAt).toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" })
     : null;
@@ -446,6 +449,9 @@ export default function NHLShotMap() {
         .sn{font-family:'Anton',sans-serif;font-size:36px;letter-spacing:1px;line-height:1;color:${tc}}
         .sl{font-size:8px;letter-spacing:2px;color:#383848;margin-top:3px}
         .ss{font-size:8px;margin-top:2px}
+        .s-leader{margin-top:8px;padding-top:7px;border-top:1px solid #1A1A2A;display:flex;flex-direction:column;gap:2px;align-items:center}
+        .s-leader-val{font-family:'Anton',sans-serif;font-size:16px;letter-spacing:1px;line-height:1;color:${tc};opacity:0.8}
+        .s-leader-name{font-size:8px;letter-spacing:1.5px;color:#484858;text-transform:uppercase}
         .pg{display:grid;grid-template-columns:1fr 1fr;gap:1px;background:#181828}
         .pc{background:#0C0C18;padding:12px 14px}
         .ph{font-size:8px;letter-spacing:3px;color:#383848;margin-bottom:8px}
@@ -684,18 +690,25 @@ export default function NHLShotMap() {
           const sv = vsAvg(totals.sog,          totals.sogLeagueAvg,          gtype === 3);
           const gv = vsAvg(totals.goals,        totals.goalsLeagueAvg,        gtype === 3);
           const pv = vsAvg(totals.shootingPctg, totals.shootingPctgLeagueAvg, gtype === 3);
+          const tiles = [
+            { lbl:"SHOTS ON GOAL", val:totals.sog,                                rank:totals.sogRank,          v:sv, leader:leaders?.shots },
+            { lbl:"GOALS",         val:totals.goals,                               rank:totals.goalsRank,        v:gv, leader:leaders?.goals },
+            { lbl:"SHOOTING %",    val:`${(totals.shootingPctg*100).toFixed(1)}%`, rank:totals.shootingPctgRank, v:pv, leader:leaders?.pctg  },
+          ];
           return (
             <div className="sg">
-              {[
-                { lbl:"SHOTS ON GOAL", val:totals.sog,                                rank:totals.sogRank,          v:sv },
-                { lbl:"GOALS",         val:totals.goals,                               rank:totals.goalsRank,        v:gv },
-                { lbl:"SHOOTING %",    val:`${(totals.shootingPctg*100).toFixed(1)}%`, rank:totals.shootingPctgRank, v:pv },
-              ].map(s => (
+              {tiles.map(s => (
                 <div className="sc" key={s.lbl}>
                   <div className="sn">{s.val}</div>
                   <div className="sl">{s.lbl}</div>
                   <div className="ss" style={{color:rankColor(s.rank, rankTotal)}}>#{s.rank} of {rankTotal}</div>
                   <div className="ss" style={{color:s.v.color,fontSize:"8px",marginTop:"2px"}}>{s.v.sym} {s.v.txt}</div>
+                  {s.leader && (
+                    <div className="s-leader">
+                      <span className="s-leader-val">{s.leader.val}{s.lbl==="SHOOTING %" ? "%" : ""}</span>
+                      <span className="s-leader-name">{s.leader.name}</span>
+                    </div>
+                  )}
                 </div>
               ))}
             </div>
