@@ -1,22 +1,16 @@
 /**
  * fetch-nhl-data.mjs
- *
- * Fetches shot location data for all NHL teams from the NHL Edge API.
- * Saves results to public/nhl-data.json so the React app can load it at runtime.
- *
- * Run manually:  node scripts/fetch-nhl-data.mjs
- * Run via CI:    triggered by GitHub Actions on a schedule
+ * Fetches shot location data + skater stat leaders for all NHL teams.
+ * Run: node scripts/fetch-nhl-data.mjs
  */
-
 import { writeFileSync, mkdirSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
-
 const __dirname = dirname(fileURLToPath(import.meta.url))
 
 const TEAMS = [
   { id: 1,  name: "Devils",         city: "New Jersey",   abbr: "NJD", color: "#CE1126" },
-  { id: 2,  name: "Islanders",      city: "New York",     abbr: "NYI", color: "#1A7BC4" },
+  { id: 2,  name: "Islanders",      city: "New York",     abbr: "NYI", color: "#1A6BC4" },
   { id: 3,  name: "Rangers",        city: "New York",     abbr: "NYR", color: "#1A5CC4" },
   { id: 4,  name: "Flyers",         city: "Philadelphia", abbr: "PHI", color: "#F74902" },
   { id: 5,  name: "Penguins",       city: "Pittsburgh",   abbr: "PIT", color: "#FCB514" },
@@ -46,93 +40,109 @@ const TEAMS = [
   { id: 52, name: "Jets",           city: "Winnipeg",     abbr: "WPG", color: "#1A5CC4" },
   { id: 54, name: "Golden Knights", city: "Vegas",        abbr: "VGK", color: "#B4975A" },
   { id: 55, name: "Kraken",         city: "Seattle",      abbr: "SEA", color: "#99D9D9" },
-  { id: 59, name: "Mammoth",         city: "Utah",         abbr: "UTA", color: "#69B3E7" },
+  { id: 59, name: "Mammoth",        city: "Utah",         abbr: "UTA", color: "#69B3E7" },
 ]
+const SEASONS    = ["20252026", "20242025"]
+const GAME_TYPES = [2, 3]
+const SHOT_URL   = "https://api-web.nhle.com/v1/edge/team-shot-location-detail"
+const STATS_URL  = "https://api-web.nhle.com/v1/club-stats"
 
-const SEASONS   = ["20252026", "20242025"]
-const GAME_TYPES = [2, 3] // 2 = regular season, 3 = playoffs
-
-const BASE_URL = "https://api-web.nhle.com/v1/edge/team-shot-location-detail"
+async function get(url) {
+  try {
+    const res = await fetch(url, {
+      headers: { 'User-Agent': 'Mozilla/5.0 (compatible; nhl-shot-map/1.0)' },
+      signal: AbortSignal.timeout(10000),
+    })
+    if (res.status === 404) return null
+    if (!res.ok) throw new Error(`HTTP ${res.status}`)
+    return await res.json()
+  } catch { return null }
+}
 
 async function fetchWithRetry(url, retries = 3) {
   for (let i = 0; i < retries; i++) {
-    try {
-      const res = await fetch(url, {
-        headers: { 'User-Agent': 'Mozilla/5.0 (compatible; nhl-shot-map/1.0)' },
-        signal: AbortSignal.timeout(10000),
-      })
-      if (!res.ok) {
-        if (res.status === 404) return null // no data for this combo (e.g. playoffs not started)
-        throw new Error(`HTTP ${res.status}`)
-      }
-      return await res.json()
-    } catch (err) {
-      if (i === retries - 1) {
-        console.warn(`  ✗ Failed after ${retries} attempts: ${url} — ${err.message}`)
-        return null
-      }
-      console.warn(`  ↻ Retry ${i + 1}/${retries - 1}: ${url}`)
-      await new Promise(r => setTimeout(r, 1000 * (i + 1)))
-    }
+    const d = await get(url)
+    if (d !== null) return d
+    if (i < retries - 1) await new Promise(r => setTimeout(r, 1000 * (i + 1)))
+  }
+  return null
+}
+
+function extractLeaders(data) {
+  if (!data) return null
+  const skaters = data.skaters
+  if (!Array.isArray(skaters) || !skaters.length) return null
+
+  // firstName/lastName are { default: "Name" } objects
+  const name  = p => p?.default ?? p ?? ''
+  const shots = p => p.shots ?? 0
+  const goals = p => p.goals ?? 0
+  // shootingPctg is already a decimal (0.19 = 19%)
+  const pctg  = p => p.shootingPctg ?? 0
+
+  const qualified = skaters.filter(p => shots(p) >= 20)
+  const pool      = qualified.length ? qualified : skaters
+
+  const topShots = [...skaters].sort((a,b) => shots(b) - shots(a))[0]
+  const topGoals = [...skaters].sort((a,b) => goals(b) - goals(a))[0]
+  const topPctg  = [...pool].sort((a,b)    => pctg(b)  - pctg(a))[0]
+
+  const fmt = (p, val) => ({
+    name:     name(p.lastName),
+    firstName: name(p.firstName),
+    playerId: p.playerId,
+    val,
+  })
+
+  return {
+    shots: topShots ? fmt(topShots, shots(topShots)) : null,
+    goals: topGoals ? fmt(topGoals, goals(topGoals)) : null,
+    pctg:  topPctg  ? fmt(topPctg,  +(pctg(topPctg) * 100).toFixed(1)) : null,
   }
 }
 
 async function main() {
-  console.log('🏒 NHL Shot Location Data Fetcher')
-  console.log(`   Fetching ${TEAMS.length} teams × ${SEASONS.length} seasons × ${GAME_TYPES.length} game types`)
-  console.log(`   Total requests: up to ${TEAMS.length * SEASONS.length * GAME_TYPES.length}\n`)
+  console.log('🏒 NHL Shot Location + Skater Leaders Fetcher')
+  console.log(`   ${TEAMS.length} teams × ${SEASONS.length} seasons × ${GAME_TYPES.length} game types\n`)
 
   const output = {
     fetchedAt: new Date().toISOString(),
-    teams: TEAMS,
-    data: {},
-    missingKeys: [],
+    teams: TEAMS, data: {}, leaders: {}, missingKeys: [],
   }
-
-  let success = 0
-  let missing = 0
+  let success = 0, missing = 0, leadersFound = 0
 
   for (const season of SEASONS) {
     for (const gameType of GAME_TYPES) {
-      console.log(`\n📅 Season ${season} · Game type ${gameType === 2 ? 'Regular Season' : 'Playoffs'}`)
-
+      console.log(`\n📅 Season ${season} · ${gameType === 2 ? 'Regular Season' : 'Playoffs'}`)
       for (const team of TEAMS) {
         const key = `${team.id}_${season}_${gameType}`
-        const url = `${BASE_URL}/${team.id}/${season}/${gameType}`
-
         process.stdout.write(`  ${team.abbr.padEnd(4)} `)
 
-        const data = await fetchWithRetry(url)
-
-        if (data && data.shotLocationDetails?.length) {
-          output.data[key] = data
-          process.stdout.write(`✓\n`)
-          success++
-        } else {
-          output.missingKeys.push(key)
-          process.stdout.write(`— (no data)\n`)
-          missing++
+        const shotData = await fetchWithRetry(`${SHOT_URL}/${team.id}/${season}/${gameType}`)
+        if (!shotData?.shotLocationDetails?.length) {
+          output.missingKeys.push(key); process.stdout.write(`—\n`); missing++
+          await new Promise(r => setTimeout(r, 150)); continue
         }
+        output.data[key] = shotData; success++
 
-        // Small delay to be respectful to the NHL API
-        await new Promise(r => setTimeout(r, 150))
+        const statsData = await get(`${STATS_URL}/${team.abbr}/${season}/${gameType}`)
+        const leaders   = extractLeaders(statsData)
+        if (leaders) {
+          output.leaders[key] = leaders; leadersFound++
+          process.stdout.write(`✓ +${leaders.goals?.name ?? '?'}\n`)
+        } else {
+          process.stdout.write(`✓\n`)
+        }
+        await new Promise(r => setTimeout(r, 200))
       }
     }
   }
 
-  // Write to public/ so Vite includes it in the build output
-  const outDir  = join(__dirname, '..', 'public')
-  const outFile = join(outDir, 'nhl-data.json')
+  const outDir = join(__dirname, '..', 'public')
   mkdirSync(outDir, { recursive: true })
-  writeFileSync(outFile, JSON.stringify(output, null, 2))
-
-  console.log(`\n✅ Done!`)
-  console.log(`   ${success} datasets saved`)
-  console.log(`   ${missing} combos had no data (e.g. playoffs not yet played)`)
+  writeFileSync(join(outDir, 'nhl-data.json'), JSON.stringify(output, null, 2))
+  console.log(`\n✅ Done! ${success} shot datasets · ${leadersFound} with leaders · ${missing} missing`)
   console.log(`   → public/nhl-data.json`)
 }
 
-main().catch(err => {
-  console.error('Fatal error:', err)
-  process.exit(1)
-})
+main().catch(err => { console.error('Fatal:', err); process.exit(1) })
