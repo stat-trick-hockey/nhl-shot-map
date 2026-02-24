@@ -24,9 +24,9 @@ const ZONE_POS = {
   "L Corner":               { x:12,  y:364, w:78,  h:64  },
   "R Corner":               { x:550, y:364, w:78,  h:64  },
   // ── Crease starts exactly at goal line (y=380), same width as Low Slot
-  "Crease":                 { x:220, y:380, w:200, h:26  },
+  "Crease":                 { x:220, y:364, w:200, h:16  },
   // ── Behind the net ────────────────────────────────────────────────────
-  "Behind the Net":         { x:220, y:410, w:200, h:18  },
+  "Behind the Net":         { x:12,  y:384, w:616, h:44  },
 };
 
 function rankColor(r, total) {
