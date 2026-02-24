@@ -196,167 +196,169 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
   const prolific  = top25(goalsRank);
   const starved   = bot25(goalsRank);
 
+  const r = (text, sub, icon) => ({ text, sub, icon });
+
   // ── Elite combos ────────────────────────────────────────────────────────
   if (elite && hdHigh && lsHigh)
-    return { text: "Unstoppable · Elite danger from everywhere", icon: "⚡" };
+    return r("Unstoppable", "Top-tier shot volume, elite conversion rate, and a suffocating presence in the most dangerous zones", "⚡");
   if (elite && ptHigh)
-    return { text: "Complete package · Volume, precision, reach", icon: "👑" };
+    return r("Complete package", "High shot volume and top-end shooting % with a long reach that stretches defences from every angle", "👑");
   if (elite)
-    return { text: "Complete attack · No weaknesses", icon: "👑" };
+    return r("Complete attack", "Among the league's best at generating shots and converting them — no obvious weakness to exploit", "👑");
 
   // ── Crease & net-front ───────────────────────────────────────────────────
   if (crHigh && nfHigh && vClinical)
-    return { text: "Net-front assassins · Punish every scramble", icon: "🔪" };
+    return r("Net-front assassins", "An unusually high share of shots come from the crease and net-front — and they finish them at an elite rate", "🔪");
   if (crHigh && nfHigh && highVol)
-    return { text: "Crease crashers · Swarm the paint relentlessly", icon: "💥" };
+    return r("Crease crashers", "High-volume net-front attack — they flood the paint and generate chaos in front of the goalie", "💥");
   if (crHigh && hdHigh && clinical)
-    return { text: "High-danger hunters · Finish in tight", icon: "🎯" };
+    return r("High-danger hunters", "Prioritises shots from the crease and high-danger areas, and converts them efficiently", "🎯");
   if (crHigh && nfHigh)
-    return { text: "Net-front heavy · Life in the crease", icon: "🏒" };
+    return r("Net-front heavy", "Above-average crease and net-front volume — much of the offence is generated right in front of the goalie", "🏒");
   if (crMid && nfMid && hdHigh && highVol)
-    return { text: "Inside-out attack · Earn it at the net", icon: "💪" };
+    return r("Inside-out attack", "High shot volume with strong net-front presence — earns its looks the hard way by working into tight spaces", "💪");
   if (nfMid && wild)
-    return { text: "Traffic seekers · Quantity game near the net", icon: "📦" };
+    return r("Traffic seekers", "Sends plenty of shots through net-front traffic but struggles to convert — quantity over quality near the crease", "📦");
 
   // ── Low slot dominant ────────────────────────────────────────────────────
   if (lsHigh && vClinical && prolific)
-    return { text: "Low slot assassins · Ruthless from in close", icon: "🔪" };
+    return r("Low slot assassins", "Generates a league-high share of shots from the low slot and converts them at an elite rate — the most dangerous spot on the ice", "🔪");
   if (lsHigh && clinical)
-    return { text: "Low slot snipers · Make every chance count", icon: "🎯" };
+    return r("Low slot snipers", "Attacks the low slot more than almost any team, and is efficient at converting those high-quality looks", "🎯");
   if (lsHigh && highVol && wild)
-    return { text: "Slot-hungry · Shoot first, ask later", icon: "🔥" };
+    return r("Slot-hungry", "Floods the low slot with volume but shoots inconsistently — lots of attempts, variable results", "🔥");
   if (lsHigh && highVol)
-    return { text: "Direct and dangerous · Straight to the slot", icon: "⚡" };
+    return r("Direct and dangerous", "High shot volume concentrated in the low slot — a direct, straight-to-the-danger-zone approach", "⚡");
 
   // lsMid + hdMid: break into sub-types by secondary signal
   if (lsMid && hdMid && crMid && nfMid)
-    return { text: "Paint crashers · Crease pressure with slot volume", icon: "🏒" };
+    return r("Paint crashers", "Above-average slot volume paired with a notable crease presence — pushes hard into the most dangerous ice", "🏒");
   if (lsMid && hdMid && ptMid && drHigh)
-    return { text: "Two-way threat · Slot attack plus active blue line", icon: "🔵" };
+    return r("Two-way threat", "Combines solid slot attack from forwards with active defenders who pinch and contribute from the blue line", "🔵");
   if (lsMid && hdMid && ciMid)
-    return { text: "Inside-out blend · Slot and circle attack combined", icon: "🔀" };
+    return r("Inside-out blend", "Attacks from both the low slot and the faceoff circles — a balanced inside-out system that covers the middle third of the ice", "🔀");
   if (lsMid && hdMid && coMid && wild)
-    return { text: "Physical and scattered · Boards to slot without bite", icon: "💪" };
+    return r("Physical and scattered", "Works the corners and boards into slot shots but misfires often — a physical game that lacks finishing precision", "💪");
   if (lsMid && hdMid && coMid)
-    return { text: "Physical attack · Corners to slot grind game", icon: "💪" };
+    return r("Physical attack", "Earns slot chances through cycle work and corner battles — a grinding, possession-based style", "💪");
   if (lsMid && hdMid && wild)
-    return { text: "Slot-heavy shooters · Volume without precision", icon: "🔥" };
+    return r("Slot-heavy shooters", "Generates a good share of shots from the slot area but shoots below average — volume without enough finish", "🔥");
   if (lsMid && hdMid && clinical)
-    return { text: "Slot-focused and efficient · Earn it up close", icon: "🎯" };
+    return r("Slot-focused and efficient", "Directs shots toward the slot and high-danger areas, and converts those chances at a good rate", "🎯");
   if (lsMid && hdMid)
-    return { text: "Slot-first system · Everything runs through centre", icon: "🏒" };
+    return r("Slot-first system", "Funnels most of its attack through the centre of the ice — structured offence built around the slot and low-danger entry", "🏒");
 
   // ── High danger broad ────────────────────────────────────────────────────
   if (hdHigh && highVol && clinical)
-    return { text: "Danger zone addicts · High volume, high quality", icon: "🔥" };
+    return r("Danger zone addicts", "Top-tier shot volume with an exceptionally high proportion coming from high-danger areas — and they're converting", "🔥");
   if (hdHigh && highVol)
-    return { text: "High-danger hunters who live in the slot", icon: "💥" };
+    return r("High-danger hunters", "Generates huge shot volume from the slot and dangerous areas — relentless at getting to the hardest spots to defend", "💥");
   if (hdHigh && clinical)
-    return { text: "Selective but lethal · Choose danger, convert", icon: "🎯" };
+    return r("Selective but lethal", "Doesn't overwhelm with volume but picks high-danger spots deliberately and converts at a strong rate", "🎯");
   if (hdHigh && lowVol)
-    return { text: "Opportunists · Wait for danger, then strike", icon: "🦊" };
+    return r("Opportunists", "Low overall shot volume but a high proportion from dangerous zones — waits for the right moment, then strikes", "🦊");
   if (hdHigh)
-    return { text: "High-danger focused · Willing to pay the price", icon: "💥" };
+    return r("High-danger focused", "A top-percentile share of shots from the most dangerous ice — willing to grind into tight spaces to get quality looks", "💥");
   if (hdMid && clinical && prolific)
-    return { text: "Efficient inside-out · Danger with purpose", icon: "🎯" };
+    return r("Efficient inside-out", "Above-average danger-zone share combined with above-average conversion — a purposeful attack that makes chances count", "🎯");
 
   // ── Point shot heavy ─────────────────────────────────────────────────────
   if (ptHigh && drHigh && vClinical)
-    return { text: "D-zone snipers · Pinching blueline killers", icon: "🎯" };
+    return r("D-zone snipers", "Defenders generate a league-high share of shots from the point — and those shots are finding the net at an elite rate", "🎯");
   if (ptHigh && drHigh && highVol)
-    return { text: "Blue-line blitz · Active D driving offence", icon: "🔵" };
+    return r("Blue-line blitz", "Active pinching defenders flood the zone with point shots, generating volume and creating deflection and tip-in opportunities", "🔵");
   if (ptHigh && drHigh)
-    return { text: "Blue-line heavy · Defenders carry the load", icon: "🔵" };
+    return r("Blue-line heavy", "Defenders contribute an unusually high share of total shots — the offence is built around point shot generation and traffic", "🔵");
   if (ptHigh && highVol && wild)
-    return { text: "Point shot barrage · Screen and tip everything", icon: "🌊" };
+    return r("Point shot barrage", "High-volume attack with a strong blue-line component — lots of point shots looking for screens and redirects, but inconsistent results", "🌊");
   if (ptHigh && clinical)
-    return { text: "Long-range specialists · Make distance shots count", icon: "🎯" };
+    return r("Long-range specialists", "Higher-than-average point shot volume and an ability to convert from distance — defenders and long-range shooters carry offensive weight", "🎯");
   if (ptHigh)
-    return { text: "Perimeter to slot · Point shots feeding chaos", icon: "🔀" };
+    return r("Perimeter to slot", "Generates a significant share of shots from the point — uses blue-line pressure to open up space and create second-chance opportunities", "🔀");
   if (ptMid && drHigh && clinical)
-    return { text: "Point shot precision · Smart D with reach", icon: "📐" };
+    return r("Point shot precision", "Defenders punch above their weight — a high defensive shot share paired with above-average conversion keeps opponents honest", "📐");
   if (ptMid && drHigh)
-    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
+    return r("D-led attack", "Defenders contribute more than average to total shot volume — a blue-line-driven system that relies on point shot generation", "🔵");
 
   // ── Circle-heavy ─────────────────────────────────────────────────────────
   if (ciHigh && vClinical)
-    return { text: "Circle snipers · Ice-cold from the dots", icon: "❄️" };
+    return r("Circle snipers", "An exceptionally high share of shots from the faceoff circles, converted at an elite rate — precise shooters who thrive from the dots", "❄️");
   if (ciHigh && highVol && clinical)
-    return { text: "Faceoff circle threats · Wide and accurate", icon: "🎯" };
+    return r("Faceoff circle threats", "Above-average shot volume from the circles with good conversion — a wide, accurate attack that stretches defences laterally", "🎯");
   if (ciHigh && highVol)
-    return { text: "Wide-angle offence · Circles as the launchpad", icon: "🔄" };
+    return r("Wide-angle offence", "Generates lots of shots from the faceoff circles — a wide-angle attack that tests goalies from the perimeter before finding the slot", "🔄");
   if (ciHigh && clinical)
-    return { text: "Patient outside-in · Pick the spot, hit it", icon: "🧊" };
+    return r("Patient outside-in", "Shoots frequently from the circles and converts efficiently — picks spots from distance rather than forcing traffic in tight", "🧊");
   if (ciHigh && wild)
-    return { text: "Spray and pray from the circles", icon: "🌀" };
+    return r("Spray and pray", "Unusually high circle shot volume but poor conversion — fires from the dots at high volume without consistent results", "🌀");
   if (ciHigh)
-    return { text: "Outside-in system · Circle shots feeding the slot", icon: "↩️" };
+    return r("Outside-in system", "A high proportion of shots originate from the faceoff circles — uses wide-angle attempts to set up rebounds and tips in the slot", "↩️");
   if (ciMid && ptMid)
-    return { text: "Wide perimeter attack · Circles and points combined", icon: "🔄" };
+    return r("Wide perimeter attack", "Combines above-average point shot and circle activity — a system that attacks from the perimeter and looks to funnel pucks inside", "🔄");
 
   // ── Corner / cycle ───────────────────────────────────────────────────────
   if (coHigh && hdMid && clinical)
-    return { text: "Cycle masters · Work the corners, cash in close", icon: "🔄" };
+    return r("Cycle masters", "Works the cycle game hard — wins pucks behind the net and in the corners and converts the resulting slot chances efficiently", "🔄");
   if (coHigh && highVol)
-    return { text: "Grind it out · Board battles feeding the crease", icon: "💪" };
+    return r("Grind it out", "High corner and behind-the-net activity feeds a high-volume attack — earns shots through sustained board battles and cycle pressure", "💪");
   if (coMid && nfMid)
-    return { text: "Below the goal line · Corners to crease game", icon: "🔃" };
+    return r("Below the goal line", "Uses corner and behind-net possession to manufacture net-front opportunities — a below-the-hash-marks system", "🔃");
 
   // ── Forward vs D driven ──────────────────────────────────────────────────
   if (drLow && vClinical && prolific)
-    return { text: "Forward-driven · Elite scorers carry the load", icon: "⭐" };
+    return r("Forward-driven", "Forwards carry almost all offensive responsibility — elite forward shooting keeps the attack dangerous despite minimal blue-line contribution", "⭐");
   if (drLow && highVol && clinical)
-    return { text: "Forward-centric machine · Forwards carry everything", icon: "🏹" };
+    return r("Forward-centric machine", "High-volume attack generated almost entirely by forwards — defenders stay conservative while the forward group does the heavy lifting", "🏹");
   if (drHigh && clinical && prolific)
-    return { text: "D-zone excellence · Defenders make the difference", icon: "🛡️" };
+    return r("D-zone excellence", "Defenders contribute an outsized share of goals and shots — a system that weaponises the blue line with precision", "🛡️");
   if (drHigh && highVol)
-    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
+    return r("D-led attack", "Defenders generate a top-percentile share of total shots — pinching aggressively and driving volume from the blue line", "🔵");
 
   // ── Volume extremes ──────────────────────────────────────────────────────
   if (highVol && vClinical && prolific)
-    return { text: "Offensive powerhouse · Generate and convert", icon: "⚡" };
+    return r("Offensive powerhouse", "Top-quartile shot volume combined with elite conversion — generating and finishing chances at an elite level", "⚡");
   if (highVol && vWild)
-    return { text: "Shoot-first mentality · Quantity over quality", icon: "🌀" };
+    return r("Shoot-first mentality", "One of the highest shot volumes in the league but a bottom-tier shooting % — quantity over quality defines this attack", "🌀");
   if (highVol && clinical)
-    return { text: "High-tempo machine · Volume with purpose", icon: "🔥" };
+    return r("High-tempo machine", "Generates shots at a high rate and converts above average — a fast, purposeful attack with both volume and efficiency", "🔥");
   if (highVol && wild)
-    return { text: "All gas no brakes · Shots from everywhere", icon: "💨" };
+    return r("All gas no brakes", "Fires shots at an above-average rate from all over the ice but struggles to convert — a high-energy, low-precision attack", "💨");
   if (highVol)
-    return { text: "Volume-driven attack · Keep the goalie busy", icon: "📊" };
+    return r("Volume-driven attack", "One of the higher shot totals in the league — keeps the pressure on by outshooting opponents and banking on volume", "📊");
 
   // ── Low volume ───────────────────────────────────────────────────────────
   if (lowVol && vClinical && prolific)
-    return { text: "Less is more · Ruthless efficiency", icon: "🔪" };
+    return r("Less is more", "Bottom-quartile shot volume but elite shooting % — maximises every look and scores more than the shot count suggests", "🔪");
   if (lowVol && clinical)
-    return { text: "Patient and precise · Low volume, high impact", icon: "🧊" };
+    return r("Patient and precise", "Generates fewer shots than most but converts them at an above-average rate — a selective, quality-over-quantity approach", "🧊");
   if (lowVol && wild && starved)
-    return { text: "Offensively challenged · Rare shots, rare goals", icon: "😬" };
+    return r("Offensively challenged", "Low shot volume and poor conversion — struggles both to generate chances and to finish when they do get one", "😬");
   if (lowVol && starved)
-    return { text: "Quiet attack · Struggle to generate and convert", icon: "📉" };
+    return r("Quiet attack", "Low shots and goals suggest an offence that can't consistently generate or convert — a team that needs to create more looks", "📉");
   if (lowVol)
-    return { text: "Conservative offence · Choose moments carefully", icon: "🕰️" };
+    return r("Conservative offence", "Generates fewer shots than average — a patient system that prioritises shot quality and waits for the right moment", "🕰️");
 
   // ── Efficiency fallbacks ─────────────────────────────────────────────────
   if (vClinical && prolific)
-    return { text: "Clinical finishers · Make every chance pay", icon: "💎" };
+    return r("Clinical finishers", "Elite shooting % drives outsized goal totals — makes every shot count and punishes opponents for leaving any space", "💎");
   if (vClinical)
-    return { text: "Precision attack · Ice water in their veins", icon: "❄️" };
+    return r("Precision attack", "Top-tier shooting % despite average volume — a disciplined, accurate attack that wastes very few scoring chances", "❄️");
   if (clinical && prolific)
-    return { text: "Efficient and dangerous · Quality over quantity", icon: "🎯" };
+    return r("Efficient and dangerous", "Above-average shooting % and goal production — a quality-first approach that generates more goals than raw shot count would suggest", "🎯");
   if (clinical && coMid)
-    return { text: "Quiet efficiency · Grind-style attack that converts", icon: "🧠" };
+    return r("Quiet efficiency", "A grinding, cycle-based attack that converts chances at a solid rate — unspectacular but effective", "🧠");
   if (clinical)
-    return { text: "Selective shooters · Make every shot count", icon: "🧠" };
+    return r("Selective shooters", "Above-average shooting % — picks spots carefully and converts more than the volume suggests", "🧠");
   if (vWild && highVol)
-    return { text: "Chaotic offence · Shoot everything, score little", icon: "🎲" };
+    return r("Chaotic offence", "High shot volume but a bottom-tier conversion rate — fires from everywhere but struggles to beat goalies consistently", "🎲");
   if (wild)
-    return { text: "Streaky attack · Hot and cold in waves", icon: "🌊" };
+    return r("Streaky attack", "Below-average shooting % — tends to run hot and cold, capable of big nights but inconsistent over stretches", "🌊");
   if (coMid)
-    return { text: "Grinding offence · Methodical cycle-based attack", icon: "⚙️" };
+    return r("Grinding offence", "Works the cycle game and generates shots through board battles and sustained pressure — a methodical, physical approach", "⚙️");
   if (nfMid)
-    return { text: "Net-presence game · Screens and tips off the rush", icon: "🏒" };
+    return r("Net-presence game", "Creates a solid number of looks through net-front screens and deflections — traffic and tips are part of the identity", "🏒");
 
-  return { text: "Balanced attack · No clear signature zone", icon: "⚖️" };
+  return r("Balanced attack", "No single zone or style dominates — an even spread of shot locations with average conversion across the board", "⚖️");
 }
 
 export default function NHLShotMap() {
@@ -417,14 +419,19 @@ export default function NHLShotMap() {
         .eyebrow{font-size:9px;letter-spacing:4px;color:#383848;margin-bottom:4px}
         .city{font-size:10px;letter-spacing:4px;color:#555;text-transform:uppercase}
         .teamname{font-family:'Anton',sans-serif;font-size:50px;letter-spacing:3px;line-height:1;color:${tc}}
-        .archetype{margin-top:10px;display:inline-flex;align-items:center;gap:8px;background:${tc}18;border:1px solid ${tc}33;border-radius:3px;padding:5px 10px}
-        .arch-icon{font-size:13px;line-height:1}
-        .arch-text{font-size:11px;letter-spacing:1px;color:${tc};font-style:italic}
+        .archetype{margin-top:10px;display:inline-flex;align-items:flex-start;gap:9px;background:${tc}18;border:1px solid ${tc}33;border-radius:3px;padding:8px 12px;max-width:calc(100% - 110px)}
+        .arch-icon{font-size:14px;line-height:1.4;flex-shrink:0}
+        .arch-body{display:flex;flex-direction:column;gap:3px}
+        .arch-text{font-size:11px;letter-spacing:1px;color:${tc};font-style:italic;line-height:1.3}
+        .arch-sub{font-size:9px;letter-spacing:0.2px;color:${tc};opacity:0.5;line-height:1.55;font-style:normal}
         .badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:9px;letter-spacing:2px;color:#444;border:1px solid #1E1E2E;padding:4px 10px;border-radius:2px}
         .bdot{width:5px;height:5px;border-radius:50%;background:${tc}}
-        .ctrls{padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;background:#08080F;border-bottom:1px solid #181828}
-        select{background:#10101C;border:1px solid #1E1E2E;color:#999;font-family:'DM Mono',monospace;font-size:10px;padding:6px 8px;border-radius:2px;outline:none;cursor:pointer;flex:1;min-width:100px}
+        .ctrls{padding:10px 14px;display:flex;gap:6px;align-items:center;background:#08080F;border-bottom:1px solid #181828}
+        select{background:#10101C;border:1px solid #1E1E2E;color:#999;font-family:'DM Mono',monospace;font-size:10px;padding:5px 7px;border-radius:2px;outline:none;cursor:pointer}
         select:focus{border-color:${tc}77}
+        .sel-team{flex:1;min-width:0}
+        .sel-season{width:74px;flex-shrink:0}
+        .sel-gtype{width:90px;flex-shrink:0}
         .tog{display:flex;border:1px solid #1E1E2E;border-radius:2px;overflow:hidden}
         .tbtn{background:transparent;border:none;color:#444;font-family:'DM Mono',monospace;font-size:9px;letter-spacing:2px;padding:6px 10px;cursor:pointer;transition:all .15s;white-space:nowrap}
         .tbtn.on{background:${tc};color:#000;font-weight:500}
@@ -471,14 +478,17 @@ export default function NHLShotMap() {
           <div className="archetype">
             {archetype && <>
               <span className="arch-icon">{archetype.icon}</span>
-              <span className="arch-text">{archetype.text}</span>
+              <span className="arch-body">
+                <span className="arch-text">{archetype.text}</span>
+                <span className="arch-sub">{archetype.sub}</span>
+              </span>
             </>}
           </div>
           <img
             src={`https://assets.nhle.com/logos/nhl/svg/${team.abbr}_light.svg`}
             alt={team.name}
             onError={e => e.target.style.display="none"}
-            style={{position:"absolute",right:"20px",top:"14px",width:"90px",height:"90px",objectFit:"contain",opacity:0.85}}
+            style={{position:"absolute",right:"20px",top:"50%",transform:"translateY(-50%)",width:"84px",height:"84px",objectFit:"contain",opacity:0.85}}
           />
           <div className="badge">
             <div className="bdot" />
@@ -488,13 +498,13 @@ export default function NHLShotMap() {
 
         {/* Controls */}
         <div className="ctrls">
-          <select value={teamId} onChange={e => setTeamId(+e.target.value)} disabled={!teams.length}>
+          <select className="sel-team" value={teamId} onChange={e => setTeamId(+e.target.value)} disabled={!teams.length}>
             {teams.map(t => <option key={t.id} value={t.id}>{t.city} {t.name}</option>)}
           </select>
-          <select value={season} onChange={e => setSeason(e.target.value)}>
+          <select className="sel-season" value={season} onChange={e => setSeason(e.target.value)}>
             {SEASONS.map(s => <option key={s} value={s}>{s.slice(0,4)}–{s.slice(6)}</option>)}
           </select>
-          <select value={gtype} onChange={e => setGtype(+e.target.value)}>
+          <select className="sel-gtype" value={gtype} onChange={e => setGtype(+e.target.value)}>
             {GAME_TYPES.map(g => <option key={g.v} value={g.v}>{g.l}</option>)}
           </select>
           <div className="tog">
@@ -543,21 +553,66 @@ export default function NHLShotMap() {
                 </div>
               )}
 
-              <svg viewBox="0 0 640 430" style={{width:"100%",display:"block"}}>
+              <svg viewBox="0 0 640 440" style={{width:"100%",display:"block"}}>
                 <defs>
                   <filter id="gl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+                  <clipPath id="rink-clip">
+                    <rect x="10" y="10" width="620" height="420" rx="58"/>
+                  </clipPath>
                 </defs>
-                <rect x="8" y="20" width="624" height="396" rx="62" fill="#0A0A18" stroke="#181828" strokeWidth="2"/>
-                <line x1="8" y1="142" x2="632" y2="142" stroke="#182040" strokeWidth="1.5" strokeDasharray="5,4"/>
-                <line x1="8" y1="106" x2="632" y2="106" stroke="#1A1628" strokeWidth="1" strokeDasharray="3,6"/>
-                <ellipse cx="320" cy="378" rx="74" ry="22" fill="none" stroke="#1C2440" strokeWidth="1.5"/>
-                <rect x="284" y="390" width="72" height="18" rx="2" fill="none" stroke="#1C1C32" strokeWidth="1.5"/>
-                {[178,462].map(cx => (
-                  <g key={cx}>
-                    <circle cx={cx} cy="268" r="60" fill="none" stroke="#14142A" strokeWidth="1.5"/>
-                    <circle cx={cx} cy="268" r="3" fill="#14142A"/>
+
+                {/* Rink surface */}
+                <rect x="10" y="10" width="620" height="420" rx="58" fill="#09091A" stroke="#252540" strokeWidth="2.5"/>
+
+                {/* Offensive zone subtle tint */}
+                <rect x="10" y="196" width="620" height="234" fill="#0B0B20" clipPath="url(#rink-clip)"/>
+
+                {/* Blue line */}
+                <line x1="10" y1="196" x2="630" y2="196" stroke="#1A2E6E" strokeWidth="8" clipPath="url(#rink-clip)"/>
+
+                {/* Red center line dashed */}
+                <line x1="10" y1="110" x2="630" y2="110" stroke="#5A1010" strokeWidth="4" strokeDasharray="18,10" clipPath="url(#rink-clip)"/>
+
+                {/* Goal line */}
+                <line x1="60" y1="380" x2="580" y2="380" stroke="#5A1010" strokeWidth="2.5" clipPath="url(#rink-clip)"/>
+
+                {/* Goal crease fill */}
+                <path d="M 272 380 A 48 36 0 0 0 368 380 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
+                {/* Goal crease arc */}
+                <path d="M 272 380 A 48 36 0 0 0 368 380" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
+                {/* Goal posts */}
+                <rect x="293" y="398" width="54" height="15" rx="1.5" fill="none" stroke="#2A2A50" strokeWidth="2" clipPath="url(#rink-clip)"/>
+
+                {/* Offensive zone faceoff circles with hash marks */}
+                {[168, 472].map(cx => (
+                  <g key={cx} clipPath="url(#rink-clip)">
+                    <circle cx={cx} cy="300" r="58" fill="none" stroke="#1E1040" strokeWidth="2"/>
+                    <circle cx={cx} cy="300" r="4" fill="#2A1050"/>
+                    {[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sy],i) => (
+                      <line key={i} x1={cx+sx*38} y1={300+sy*42} x2={cx+sx*50} y2={300+sy*42} stroke="#1E1040" strokeWidth="1.5"/>
+                    ))}
+                    {[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sy],i) => (
+                      <line key={"v"+i} x1={cx+sx*42} y1={300+sy*38} x2={cx+sx*42} y2={300+sy*50} stroke="#1E1040" strokeWidth="1.5"/>
+                    ))}
                   </g>
                 ))}
+
+                {/* Neutral zone faceoff dots */}
+                {[168, 472].map(cx => (
+                  <circle key={"nz"+cx} cx={cx} cy="158" r="4" fill="#1E1040" clipPath="url(#rink-clip)"/>
+                ))}
+
+                {/* Center ice circle + dot */}
+                <circle cx="320" cy="110" r="46" fill="none" stroke="#1A2E6E" strokeWidth="1.5" clipPath="url(#rink-clip)"/>
+                <circle cx="320" cy="110" r="4" fill="#1A2E6E" clipPath="url(#rink-clip)"/>
+
+                {/* Boards outline on top */}
+                <rect x="10" y="10" width="620" height="420" rx="58" fill="none" stroke="#2A2A48" strokeWidth="3"/>
+
+                {/* Zone label */}
+                <text x="320" y="26" textAnchor="middle" fill="#1C1C34" fontSize="7" fontFamily="DM Mono" letterSpacing="4">ATTACKING ZONE</text>
+
+                {/* Heat zones rendered over rink markings */}
                 {details.map(zone => {
                   const pos = ZONE_POS[zone.area];
                   if (!pos) return null;
@@ -574,21 +629,20 @@ export default function NHLShotMap() {
                       onMouseLeave={() => setHovered(null)}
                       style={{cursor:"pointer"}}
                     >
-                      <rect x={pos.x} y={pos.y} width={pos.w} height={pos.h} rx="3"
+                      <rect x={pos.x} y={pos.y} width={pos.w} height={pos.h} rx="4"
                         fill={tc}
-                        fillOpacity={isHov ? Math.min(intensity+0.28,0.94) : intensity*0.78}
-                        stroke={isHov ? tc : "transparent"}
-                        strokeWidth="1.5"
+                        fillOpacity={isHov ? Math.min(intensity+0.28,0.94) : intensity*0.75}
+                        stroke={isHov ? tc : tc+"44"}
+                        strokeWidth={isHov ? "1.5" : "0.5"}
                         filter={isHov ? "url(#gl)" : ""}
                       />
-                      <text x={cx} y={cy-4} textAnchor="middle" fill="#FFF" fillOpacity="0.88"
+                      <text x={cx} y={cy-4} textAnchor="middle" fill="#FFF" fillOpacity="0.9"
                         fontSize="11" fontFamily="Anton,sans-serif" letterSpacing="0.5" style={{pointerEvents:"none"}}>{top}</text>
-                      <text x={cx} y={cy+10} textAnchor="middle" fill="#FFF" fillOpacity="0.52"
+                      <text x={cx} y={cy+10} textAnchor="middle" fill="#FFF" fillOpacity="0.5"
                         fontSize="8" fontFamily="DM Mono,monospace" style={{pointerEvents:"none"}}>{sub}</text>
                     </g>
                   );
                 })}
-                <text x="320" y="14" textAnchor="middle" fill="#181828" fontSize="7" fontFamily="DM Mono" letterSpacing="4">ATTACKING ZONE</text>
               </svg>
             </div>
 
