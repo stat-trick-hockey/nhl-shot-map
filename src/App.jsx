@@ -21,8 +21,8 @@ const ZONE_POS = {
   "Low Slot":               { x:220, y:322, w:200, h:38  },
   "R Net Side":             { x:424, y:322, w:136, h:38  },
   // ── Goal area — corners flank crease+behind-net as tall pillars ───────
-  "L Corner":               { x:12,  y:364, w:78,  h:64  },
-  "R Corner":               { x:550, y:364, w:78,  h:64  },
+  "L Corner":               { x:12,  y:364, w:78,  h:16  },
+  "R Corner":               { x:550, y:364, w:78,  h:16  },
   // ── Crease starts exactly at goal line (y=380), same width as Low Slot
   "Crease":                 { x:220, y:364, w:200, h:16  },
   // ── Behind the net ────────────────────────────────────────────────────
