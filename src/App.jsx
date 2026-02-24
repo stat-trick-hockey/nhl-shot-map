@@ -28,26 +28,18 @@ function rankColor(r, total) {
   return "#F87171";
 }
 
-function vsAvg(val, avg) {
+function vsAvg(val, avg, isPlayoffs) {
   const d = ((val - avg) / avg) * 100;
-  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs avg` };
-  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs avg` };
-  return { sym: "●", color: "#FCD34D", txt: "≈ playoff avg" };
+  if (d > 5)  return { sym: "▲", color: "#00E5A0", txt: `+${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
+  if (d < -5) return { sym: "▼", color: "#F87171", txt: `${d.toFixed(0)}% vs ${isPlayoffs ? "playoff" : "league"} avg` };
+  return { sym: "●", color: "#FCD34D", txt: `≈ ${isPlayoffs ? "playoff" : "league"} avg` };
 }
 
 const SEASONS    = ["20252026", "20242025"];
 const GAME_TYPES = [{ v: 2, l: "Regular Season" }, { v: 3, l: "Playoffs" }];
 
-/**
- * For a given season + game type, collect all teams that have data,
- * then re-rank each metric from scratch using only those teams.
- * Returns a map of { teamId -> { shotLocationDetails, shotLocationTotals } }
- * with recalculated rank fields.
- */
 function buildPlayoffRanks(db, season, gtype) {
   if (!db) return null;
-
-  // Gather all teams that have data for this season/gtype
   const playoffTeamData = [];
   for (const [key, val] of Object.entries(db.data)) {
     const [tid, s, g] = key.split("_");
@@ -56,10 +48,8 @@ function buildPlayoffRanks(db, season, gtype) {
     }
   }
   if (playoffTeamData.length === 0) return null;
+  const n = playoffTeamData.length;
 
-  const n = playoffTeamData.length; // e.g. 16
-
-  // Helper: rank all teams by a numeric getter (higher = better rank 1)
   function rerank(getter) {
     const sorted = [...playoffTeamData]
       .map(t => ({ teamId: t.teamId, val: getter(t.data) }))
@@ -69,17 +59,16 @@ function buildPlayoffRanks(db, season, gtype) {
     return rankMap;
   }
 
-  // --- shotLocationTotals ranks ---
   const totalFields = [
-    { lc: "all", pos: "all", key: "sog",           rankField: "sogRank" },
-    { lc: "all", pos: "all", key: "goals",         rankField: "goalsRank" },
-    { lc: "all", pos: "all", key: "shootingPctg",  rankField: "shootingPctgRank" },
-    { lc: "all", pos: "F",   key: "sog",           rankField: "sogRank" },
-    { lc: "all", pos: "F",   key: "goals",         rankField: "goalsRank" },
-    { lc: "all", pos: "F",   key: "shootingPctg",  rankField: "shootingPctgRank" },
-    { lc: "all", pos: "D",   key: "sog",           rankField: "sogRank" },
-    { lc: "all", pos: "D",   key: "goals",         rankField: "goalsRank" },
-    { lc: "all", pos: "D",   key: "shootingPctg",  rankField: "shootingPctgRank" },
+    { lc: "all", pos: "all", key: "sog",          rankField: "sogRank" },
+    { lc: "all", pos: "all", key: "goals",        rankField: "goalsRank" },
+    { lc: "all", pos: "all", key: "shootingPctg", rankField: "shootingPctgRank" },
+    { lc: "all", pos: "F",   key: "sog",          rankField: "sogRank" },
+    { lc: "all", pos: "F",   key: "goals",        rankField: "goalsRank" },
+    { lc: "all", pos: "F",   key: "shootingPctg", rankField: "shootingPctgRank" },
+    { lc: "all", pos: "D",   key: "sog",          rankField: "sogRank" },
+    { lc: "all", pos: "D",   key: "goals",        rankField: "goalsRank" },
+    { lc: "all", pos: "D",   key: "shootingPctg", rankField: "shootingPctgRank" },
   ];
 
   const totalRankMaps = {};
@@ -91,7 +80,6 @@ function buildPlayoffRanks(db, season, gtype) {
     });
   }
 
-  // --- shotLocationDetails ranks (per area) ---
   const areas = [...new Set(playoffTeamData.flatMap(t => t.data.shotLocationDetails.map(z => z.area)))];
   const detailRankMaps = {};
   for (const area of areas) {
@@ -104,10 +92,8 @@ function buildPlayoffRanks(db, season, gtype) {
     }
   }
 
-  // Build output: per-team re-ranked data
   const result = { teamCount: n, byTeam: {} };
   for (const { teamId, data } of playoffTeamData) {
-    // Re-rank totals
     const newTotals = data.shotLocationTotals.map(row => {
       const newRow = { ...row };
       for (const f of totalFields) {
@@ -116,24 +102,19 @@ function buildPlayoffRanks(db, season, gtype) {
           newRow[f.rankField] = totalRankMaps[mapKey][teamId] ?? row[f.rankField];
         }
       }
-      // Recalculate league avg from playoff teams only
-      newRow.sogLeagueAvg         = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.sog??0), 0) / n;
-      newRow.goalsLeagueAvg       = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.goals??0), 0) / n;
-      newRow.shootingPctgLeagueAvg= playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.shootingPctg??0), 0) / n;
+      newRow.sogLeagueAvg          = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.sog??0), 0) / n;
+      newRow.goalsLeagueAvg        = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.goals??0), 0) / n;
+      newRow.shootingPctgLeagueAvg = playoffTeamData.reduce((s,t) => s + (t.data.shotLocationTotals.find(r=>r.locationCode===row.locationCode&&r.position===row.position)?.shootingPctg??0), 0) / n;
       return newRow;
     });
-
-    // Re-rank details
     const newDetails = data.shotLocationDetails.map(zone => ({
       ...zone,
       sogRank:          detailRankMaps[`${zone.area}_sogRank`]?.[teamId]          ?? zone.sogRank,
       goalsRank:        detailRankMaps[`${zone.area}_goalsRank`]?.[teamId]        ?? zone.goalsRank,
       shootingPctgRank: detailRankMaps[`${zone.area}_shootingPctgRank`]?.[teamId] ?? zone.shootingPctgRank,
     }));
-
     result.byTeam[teamId] = { ...data, shotLocationDetails: newDetails, shotLocationTotals: newTotals };
   }
-
   return result;
 }
 
@@ -142,52 +123,68 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
 
   const get = area => details.find(d => d.area === area);
 
-  const lowSlot   = get("Low Slot")?.sog     ?? 0;
-  const highSlot  = get("High Slot")?.sog    ?? 0;
-  const crease    = get("Crease")?.sog       ?? 0;
-  const lCircle   = get("L Circle")?.sog     ?? 0;
-  const rCircle   = get("R Circle")?.sog     ?? 0;
-  const lPoint    = get("L Point")?.sog      ?? 0;
-  const rPoint    = get("R Point")?.sog      ?? 0;
-  const centerPt  = get("Center Point")?.sog ?? 0;
-  const lNetSide  = get("L Net Side")?.sog   ?? 0;
-  const rNetSide  = get("R Net Side")?.sog   ?? 0;
-  const outsideL  = get("Outside L")?.sog    ?? 0;
-  const outsideR  = get("Outside R")?.sog    ?? 0;
-  const behindNet = get("Behind the Net")?.sog ?? 0;
-  const lCorner   = get("L Corner")?.sog     ?? 0;
-  const rCorner   = get("R Corner")?.sog     ?? 0;
-  const beyondRed = get("Beyond Red Line")?.sog ?? 0;
-  const offNeutral= get("Offensive Neutral Zone")?.sog ?? 0;
+  const lowSlot    = get("Low Slot")?.sog      ?? 0;
+  const crease     = get("Crease")?.sog        ?? 0;
+  const lCircle    = get("L Circle")?.sog      ?? 0;
+  const rCircle    = get("R Circle")?.sog      ?? 0;
+  const lPoint     = get("L Point")?.sog       ?? 0;
+  const rPoint     = get("R Point")?.sog       ?? 0;
+  const centerPt   = get("Center Point")?.sog  ?? 0;
+  const lNetSide   = get("L Net Side")?.sog    ?? 0;
+  const rNetSide   = get("R Net Side")?.sog    ?? 0;
+  const behindNet  = get("Behind the Net")?.sog ?? 0;
+  const lCorner    = get("L Corner")?.sog      ?? 0;
+  const rCorner    = get("R Corner")?.sog      ?? 0;
 
-  const total     = totals.sog || 1;
-  const sogRank   = totals.sogRank;
-  const shRank    = totals.shootingPctgRank;
-  const goalsRank = totals.goalsRank;
-  const defShots  = def?.sog  ?? 0;
-  const fwdShots  = fwd?.sog  ?? 1;
-  const defShPctg = def?.shootingPctg  ?? 0;
-  const fwdShPctg = fwd?.shootingPctg  ?? 0;
+  const total      = totals.sog || 1;
+  const sogRank    = totals.sogRank;
+  const shRank     = totals.shootingPctgRank;
+  const goalsRank  = totals.goalsRank;
+  const defShots   = def?.sog ?? 0;
+  const fwdShots   = fwd?.sog ?? 1;
 
-  // Zone ratios
+  // Calibrated ratios (based on real 2025-26 league distribution)
+  // High danger: range 0.286–0.385, median ~0.330
+  // Crease rate: range 0.026–0.050, median ~0.035
+  // Low slot:    range 0.220–0.304, median ~0.248
+  // Point share: range 0.173–0.246, median ~0.210
+  // Circle share:range 0.163–0.220, median ~0.198
+  // Net front:   range 0.062–0.110, median ~0.083
+  // Def ratio:   range 0.226–0.318, median ~0.270
+  // Corner share:range 0.003–0.021, median ~0.011
+
   const highDanger  = (lowSlot + crease + lNetSide + rNetSide) / total;
-  const slotShare   = (lowSlot + highSlot) / total;
   const pointShare  = (lPoint + rPoint + centerPt) / total;
   const circleShare = (lCircle + rCircle) / total;
-  const perimShare  = (outsideL + outsideR + beyondRed + offNeutral) / total;
   const netFront    = (crease + lNetSide + rNetSide) / total;
   const cornerShare = (lCorner + rCorner + behindNet) / total;
-  const defRatio    = defShots / (fwdShots + defShots);
   const creaseRate  = crease / total;
   const lowSlotRate = lowSlot / total;
+  const defRatio    = defShots / (fwdShots + defShots);
 
-  // Rank bands (proportional to pool size)
+  // Tier thresholds — calibrated to real league spread
+  const hdHigh  = highDanger  > 0.350;   // top ~8 teams
+  const hdMid   = highDanger  > 0.325;   // top ~16 teams
+  const crHigh  = creaseRate  > 0.043;   // top ~8 teams
+  const crMid   = creaseRate  > 0.035;   // top ~16 teams
+  const lsHigh  = lowSlotRate > 0.265;   // top ~8 teams
+  const lsMid   = lowSlotRate > 0.248;   // top ~16 teams
+  const ptHigh  = pointShare  > 0.230;   // top ~8 teams
+  const ptMid   = pointShare  > 0.210;   // top ~16 teams
+  const ciHigh  = circleShare > 0.210;   // top ~8 teams
+  const ciMid   = circleShare > 0.197;   // top ~16 teams
+  const nfHigh  = netFront    > 0.095;   // top ~8 teams
+  const nfMid   = netFront    > 0.083;   // top ~16 teams
+  const drHigh  = defRatio    > 0.300;   // top ~10 teams D-driven
+  const drLow   = defRatio    < 0.252;   // bottom ~8 teams F-driven
+  const coHigh  = cornerShare > 0.015;   // top ~8 teams
+  const coMid   = cornerShare > 0.011;   // top ~16 teams
+
+  // Rank bands proportional to pool size
   const top10  = r => r <= Math.ceil(rankTotal * 0.10);
   const top25  = r => r <= Math.ceil(rankTotal * 0.25);
-  const top40  = r => r <= Math.ceil(rankTotal * 0.40);
   const bot25  = r => r >= Math.floor(rankTotal * 0.75);
   const bot10  = r => r >= Math.floor(rankTotal * 0.90);
-  const mid    = r => !top25(r) && !bot25(r);
 
   const elite     = top10(sogRank) && top10(shRank);
   const highVol   = top25(sogRank);
@@ -198,101 +195,125 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
   const vWild     = bot10(shRank);
   const prolific  = top25(goalsRank);
   const starved   = bot25(goalsRank);
-  const defDriven = defRatio > 0.32;
-  const fwdDriven = defRatio < 0.22;
 
-  // ── Elite combos ──────────────────────────────────────────────────────
-  if (elite && highDanger > 0.55)
+  // ── Elite combos ────────────────────────────────────────────────────────
+  if (elite && hdHigh && lsHigh)
     return { text: "Unstoppable · Elite danger from everywhere", icon: "⚡" };
-  if (elite && slotShare > 0.48)
-    return { text: "Slot dominators · Volume meets precision", icon: "🎯" };
+  if (elite && ptHigh)
+    return { text: "Complete package · Volume, precision, reach", icon: "👑" };
   if (elite)
     return { text: "Complete attack · No weaknesses", icon: "👑" };
 
-  // ── Crease & net-front ─────────────────────────────────────────────────
-  if (creaseRate > 0.07 && netFront > 0.14 && vClinical)
+  // ── Crease & net-front ───────────────────────────────────────────────────
+  if (crHigh && nfHigh && vClinical)
     return { text: "Net-front assassins · Punish every scramble", icon: "🔪" };
-  if (creaseRate > 0.07 && netFront > 0.14 && highVol)
+  if (crHigh && nfHigh && highVol)
     return { text: "Crease crashers · Swarm the paint relentlessly", icon: "💥" };
-  if (creaseRate > 0.06 && highDanger > 0.55 && clinical)
+  if (crHigh && hdHigh && clinical)
     return { text: "High-danger hunters · Finish in tight", icon: "🎯" };
-  if (creaseRate > 0.06 && highDanger > 0.55)
+  if (crHigh && nfHigh)
     return { text: "Net-front heavy · Life in the crease", icon: "🏒" };
-  if (netFront > 0.13 && wild)
+  if (crMid && nfMid && hdHigh && highVol)
+    return { text: "Inside-out attack · Earn it at the net", icon: "💪" };
+  if (nfMid && wild)
     return { text: "Traffic seekers · Quantity game near the net", icon: "📦" };
 
-  // ── Slot-centric ───────────────────────────────────────────────────────
-  if (lowSlotRate > 0.30 && vClinical)
+  // ── Low slot dominant ────────────────────────────────────────────────────
+  if (lsHigh && vClinical && prolific)
+    return { text: "Low slot assassins · Ruthless from in close", icon: "🔪" };
+  if (lsHigh && clinical)
     return { text: "Low slot snipers · Make every chance count", icon: "🎯" };
-  if (lowSlotRate > 0.30 && highVol)
+  if (lsHigh && highVol && wild)
     return { text: "Slot-hungry · Shoot first, ask later", icon: "🔥" };
-  if (lowSlotRate > 0.28 && clinical)
-    return { text: "Direct and deadly · Straight to the slot", icon: "⚡" };
-  if (slotShare > 0.50 && highVol && wild)
-    return { text: "Volume merchants · Flood the slot", icon: "📊" };
-  if (slotShare > 0.48 && clinical)
-    return { text: "Structured attack · Earn the slot every time", icon: "🧩" };
-  if (slotShare > 0.48)
+  if (lsHigh && highVol)
+    return { text: "Direct and dangerous · Straight to the slot", icon: "⚡" };
+
+  // lsMid + hdMid: break into sub-types by secondary signal
+  if (lsMid && hdMid && crMid && nfMid)
+    return { text: "Paint crashers · Crease pressure with slot volume", icon: "🏒" };
+  if (lsMid && hdMid && ptMid && drHigh)
+    return { text: "Two-way threat · Slot attack plus active blue line", icon: "🔵" };
+  if (lsMid && hdMid && ciMid)
+    return { text: "Inside-out blend · Slot and circle attack combined", icon: "🔀" };
+  if (lsMid && hdMid && coMid && wild)
+    return { text: "Physical and scattered · Boards to slot without bite", icon: "💪" };
+  if (lsMid && hdMid && coMid)
+    return { text: "Physical attack · Corners to slot grind game", icon: "💪" };
+  if (lsMid && hdMid && wild)
+    return { text: "Slot-heavy shooters · Volume without precision", icon: "🔥" };
+  if (lsMid && hdMid && clinical)
+    return { text: "Slot-focused and efficient · Earn it up close", icon: "🎯" };
+  if (lsMid && hdMid)
     return { text: "Slot-first system · Everything runs through centre", icon: "🏒" };
 
-  // ── High danger broad ──────────────────────────────────────────────────
-  if (highDanger > 0.58 && highVol && clinical)
+  // ── High danger broad ────────────────────────────────────────────────────
+  if (hdHigh && highVol && clinical)
     return { text: "Danger zone addicts · High volume, high quality", icon: "🔥" };
-  if (highDanger > 0.58 && highVol)
-    return { text: "Inside-out attack · Earn it the hard way", icon: "💪" };
-  if (highDanger > 0.58 && clinical)
+  if (hdHigh && highVol)
+    return { text: "High-danger hunters who live in the slot", icon: "💥" };
+  if (hdHigh && clinical)
     return { text: "Selective but lethal · Choose danger, convert", icon: "🎯" };
-  if (highDanger > 0.55 && lowVol)
+  if (hdHigh && lowVol)
     return { text: "Opportunists · Wait for danger, then strike", icon: "🦊" };
-  if (highDanger > 0.55)
+  if (hdHigh)
     return { text: "High-danger focused · Willing to pay the price", icon: "💥" };
+  if (hdMid && clinical && prolific)
+    return { text: "Efficient inside-out · Danger with purpose", icon: "🎯" };
 
-  // ── Blue-line / point shot heavy ───────────────────────────────────────
-  if (pointShare > 0.24 && defDriven && vClinical)
+  // ── Point shot heavy ─────────────────────────────────────────────────────
+  if (ptHigh && drHigh && vClinical)
     return { text: "D-zone snipers · Pinching blueline killers", icon: "🎯" };
-  if (pointShare > 0.24 && defDriven && highVol)
+  if (ptHigh && drHigh && highVol)
     return { text: "Blue-line blitz · Active D driving offence", icon: "🔵" };
-  if (pointShare > 0.22 && defDriven && clinical)
-    return { text: "Point shot precision · Smart D with north-south reach", icon: "📐" };
-  if (pointShare > 0.22 && defDriven)
+  if (ptHigh && drHigh)
     return { text: "Blue-line heavy · Defenders carry the load", icon: "🔵" };
-  if (pointShare > 0.22 && highVol)
+  if (ptHigh && highVol && wild)
     return { text: "Point shot barrage · Screen and tip everything", icon: "🌊" };
-  if (pointShare > 0.20 && clinical)
+  if (ptHigh && clinical)
     return { text: "Long-range specialists · Make distance shots count", icon: "🎯" };
-  if (pointShare > 0.20)
+  if (ptHigh)
     return { text: "Perimeter to slot · Point shots feeding chaos", icon: "🔀" };
+  if (ptMid && drHigh && clinical)
+    return { text: "Point shot precision · Smart D with reach", icon: "📐" };
+  if (ptMid && drHigh)
+    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
 
-  // ── Circle-heavy ───────────────────────────────────────────────────────
-  if (circleShare > 0.24 && vClinical)
+  // ── Circle-heavy ─────────────────────────────────────────────────────────
+  if (ciHigh && vClinical)
     return { text: "Circle snipers · Ice-cold from the dots", icon: "❄️" };
-  if (circleShare > 0.24 && highVol && clinical)
+  if (ciHigh && highVol && clinical)
     return { text: "Faceoff circle threats · Wide and accurate", icon: "🎯" };
-  if (circleShare > 0.22 && highVol)
+  if (ciHigh && highVol)
     return { text: "Wide-angle offence · Circles as the launchpad", icon: "🔄" };
-  if (circleShare > 0.22 && clinical)
+  if (ciHigh && clinical)
     return { text: "Patient outside-in · Pick the spot, hit it", icon: "🧊" };
-  if (circleShare > 0.20 && wild)
+  if (ciHigh && wild)
     return { text: "Spray and pray from the circles", icon: "🌀" };
-  if (circleShare > 0.20)
+  if (ciHigh)
     return { text: "Outside-in system · Circle shots feeding the slot", icon: "↩️" };
+  if (ciMid && ptMid)
+    return { text: "Wide perimeter attack · Circles and points combined", icon: "🔄" };
 
-  // ── Perimeter / long range ─────────────────────────────────────────────
-  if (perimShare > 0.12 && highVol && wild)
-    return { text: "Long-range spammers · Quantity from distance", icon: "📡" };
-  if (perimShare > 0.12 && highVol)
-    return { text: "Perimeter volume team · Force rebounds everywhere", icon: "🌊" };
-  if (perimShare > 0.10 && clinical)
-    return { text: "Long-range precision · Surprising from distance", icon: "🎯" };
-
-  // ── Corner / behind net ────────────────────────────────────────────────
-  if (cornerShare > 0.06 && highDanger > 0.50)
+  // ── Corner / cycle ───────────────────────────────────────────────────────
+  if (coHigh && hdMid && clinical)
     return { text: "Cycle masters · Work the corners, cash in close", icon: "🔄" };
-  if (cornerShare > 0.06)
+  if (coHigh && highVol)
     return { text: "Grind it out · Board battles feeding the crease", icon: "💪" };
+  if (coMid && nfMid)
+    return { text: "Below the goal line · Corners to crease game", icon: "🔃" };
 
-  // ── Volume extremes ────────────────────────────────────────────────────
-  if (highVol && vClinical)
+  // ── Forward vs D driven ──────────────────────────────────────────────────
+  if (drLow && vClinical && prolific)
+    return { text: "Forward-driven · Elite scorers carry the load", icon: "⭐" };
+  if (drLow && highVol && clinical)
+    return { text: "Forward-centric machine · Forwards carry everything", icon: "🏹" };
+  if (drHigh && clinical && prolific)
+    return { text: "D-zone excellence · Defenders make the difference", icon: "🛡️" };
+  if (drHigh && highVol)
+    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
+
+  // ── Volume extremes ──────────────────────────────────────────────────────
+  if (highVol && vClinical && prolific)
     return { text: "Offensive powerhouse · Generate and convert", icon: "⚡" };
   if (highVol && vWild)
     return { text: "Shoot-first mentality · Quantity over quality", icon: "🌀" };
@@ -303,7 +324,7 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
   if (highVol)
     return { text: "Volume-driven attack · Keep the goalie busy", icon: "📊" };
 
-  // ── Low volume ─────────────────────────────────────────────────────────
+  // ── Low volume ───────────────────────────────────────────────────────────
   if (lowVol && vClinical && prolific)
     return { text: "Less is more · Ruthless efficiency", icon: "🔪" };
   if (lowVol && clinical)
@@ -315,54 +336,44 @@ function deriveArchetype(details, totals, fwd, def, rankTotal) {
   if (lowVol)
     return { text: "Conservative offence · Choose moments carefully", icon: "🕰️" };
 
-  // ── D vs F driven ──────────────────────────────────────────────────────
-  if (defDriven && clinical && prolific)
-    return { text: "D-zone excellence · Defenders make the difference", icon: "🛡️" };
-  if (defDriven && highVol)
-    return { text: "D-led attack · Blueline carries the offensive load", icon: "🔵" };
-  if (fwdDriven && vClinical)
-    return { text: "Forward-driven · Elite scorers do the heavy lifting", icon: "⭐" };
-  if (fwdDriven && highVol)
-    return { text: "Forward-centric machine · D stay home", icon: "🏹" };
-
-  // ── Efficiency combos ──────────────────────────────────────────────────
+  // ── Efficiency fallbacks ─────────────────────────────────────────────────
   if (vClinical && prolific)
     return { text: "Clinical finishers · Make every chance pay", icon: "💎" };
   if (vClinical)
     return { text: "Precision attack · Ice water in their veins", icon: "❄️" };
   if (clinical && prolific)
     return { text: "Efficient and dangerous · Quality over quantity", icon: "🎯" };
+  if (clinical && coMid)
+    return { text: "Quiet efficiency · Grind-style attack that converts", icon: "🧠" };
   if (clinical)
     return { text: "Selective shooters · Make every shot count", icon: "🧠" };
   if (vWild && highVol)
     return { text: "Chaotic offence · Shoot everything, score little", icon: "🎲" };
   if (wild)
     return { text: "Streaky attack · Hot and cold in waves", icon: "🌊" };
+  if (coMid)
+    return { text: "Grinding offence · Methodical cycle-based attack", icon: "⚙️" };
+  if (nfMid)
+    return { text: "Net-presence game · Screens and tips off the rush", icon: "🏒" };
 
-  // ── Fallback ───────────────────────────────────────────────────────────
   return { text: "Balanced attack · No clear signature zone", icon: "⚖️" };
 }
 
 export default function NHLShotMap() {
-  const [db, setDb]         = useState(null);       // full loaded JSON
+  const [db, setDb]           = useState(null);
   const [loadErr, setLoadErr] = useState(null);
-  const [teams, setTeams]   = useState([]);
-
-  const [teamId, setTeamId] = useState(9);
-  const [season, setSeason] = useState("20252026");
-  const [gtype, setGtype]   = useState(2);
+  const [teams, setTeams]     = useState([]);
+  const [teamId, setTeamId]   = useState(9);
+  const [season, setSeason]   = useState("20252026");
+  const [gtype, setGtype]     = useState(2);
   const [hovered, setHovered] = useState(null);
-  const [view, setView]     = useState("heatmap");
-  const [metric, setMetric] = useState("sog");
+  const [view, setView]       = useState("heatmap");
+  const [metric, setMetric]   = useState("sog");
 
-  // Load the pre-fetched JSON on mount
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}nhl-data.json`)
       .then(r => { if (!r.ok) throw new Error(`HTTP ${r.status}`); return r.json(); })
-      .then(json => {
-        setDb(json);
-        setTeams(json.teams || []);
-      })
+      .then(json => { setDb(json); setTeams(json.teams || []); })
       .catch(err => {
         console.error("Failed to load nhl-data.json:", err);
         setLoadErr("Could not load NHL data. Run `npm run fetch-data` first.");
@@ -375,11 +386,10 @@ export default function NHLShotMap() {
   const rawData = db?.data?.[key];
   const slbl    = season ? `${season.slice(0,4)}–${season.slice(6)}` : "";
 
-  // In playoffs mode, recalculate ranks using only playoff teams
-  const playoffRanks  = gtype === 3 ? buildPlayoffRanks(db, season, gtype) : null;
-  const playoffCount  = playoffRanks?.teamCount ?? 32;
-  const data          = gtype === 3 ? playoffRanks?.byTeam?.[teamId] : rawData;
-  const rankTotal     = gtype === 3 ? playoffCount : 32;
+  const playoffRanks = gtype === 3 ? buildPlayoffRanks(db, season, gtype) : null;
+  const playoffCount = playoffRanks?.teamCount ?? 32;
+  const data         = gtype === 3 ? playoffRanks?.byTeam?.[teamId] : rawData;
+  const rankTotal    = gtype === 3 ? playoffCount : 32;
 
   const details = data?.shotLocationDetails || [];
   const totals  = data?.shotLocationTotals?.find(t => t.locationCode === "all" && t.position === "all");
@@ -391,7 +401,6 @@ export default function NHLShotMap() {
 
   const hovZ = hovered ? details.find(d => d.area === hovered) : null;
 
-  // ── Archetype one-liner from data ───────────────────────────────────────
   const archetype = deriveArchetype(details, totals, fwd, def, rankTotal);
 
   const fetchedDate = db?.fetchedAt
@@ -408,7 +417,9 @@ export default function NHLShotMap() {
         .eyebrow{font-size:9px;letter-spacing:4px;color:#383848;margin-bottom:4px}
         .city{font-size:10px;letter-spacing:4px;color:#555;text-transform:uppercase}
         .teamname{font-family:'Anton',sans-serif;font-size:50px;letter-spacing:3px;line-height:1;color:${tc}}
-        .abbr-bg{position:absolute;right:22px;top:18px;font-family:'Anton',sans-serif;font-size:72px;letter-spacing:4px;color:${tc};opacity:.07;line-height:1;pointer-events:none;user-select:none}
+        .archetype{margin-top:10px;display:inline-flex;align-items:center;gap:8px;background:${tc}18;border:1px solid ${tc}33;border-radius:3px;padding:5px 10px}
+        .arch-icon{font-size:13px;line-height:1}
+        .arch-text{font-size:11px;letter-spacing:1px;color:${tc};font-style:italic}
         .badge{display:inline-flex;align-items:center;gap:6px;margin-top:10px;font-size:9px;letter-spacing:2px;color:#444;border:1px solid #1E1E2E;padding:4px 10px;border-radius:2px}
         .bdot{width:5px;height:5px;border-radius:50%;background:${tc}}
         .ctrls{padding:10px 14px;display:flex;gap:8px;flex-wrap:wrap;background:#08080F;border-bottom:1px solid #181828}
@@ -447,9 +458,7 @@ export default function NHLShotMap() {
         tr:hover td{background:#10101C}
         .foot{padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #181828;background:#08080F}
         .fl{font-size:8px;letter-spacing:2px;color:#252535}
-        .archetype{margin-top:10px;display:inline-flex;align-items:center;gap:8px;background:${tc}18;border:1px solid ${tc}33;border-radius:3px;padding:5px 10px}
-        .arch-icon{font-size:13px;line-height:1}
-        .arch-text{font-size:11px;letter-spacing:1px;color:${tc};font-style:italic;}
+        .no-data{padding:60px 20px;text-align:center;color:#333;font-size:10px;letter-spacing:3px}
         .err{padding:40px 20px;text-align:center;color:#F87171;font-size:10px;letter-spacing:2px;line-height:1.8}
       `}</style>
 
@@ -549,7 +558,6 @@ export default function NHLShotMap() {
                     <circle cx={cx} cy="268" r="3" fill="#14142A"/>
                   </g>
                 ))}
-
                 {details.map(zone => {
                   const pos = ZONE_POS[zone.area];
                   if (!pos) return null;
@@ -560,7 +568,6 @@ export default function NHLShotMap() {
                   const cy        = pos.y + pos.h / 2;
                   const top       = metric === "sog" ? zone.sog : metric === "goals" ? zone.goals : `${(zone.shootingPctg*100).toFixed(0)}%`;
                   const sub       = metric === "sog" ? `${(zone.shootingPctg*100).toFixed(0)}%` : metric === "goals" ? `${zone.sog} sog` : `${zone.goals}g`;
-
                   return (
                     <g key={zone.area}
                       onMouseEnter={() => setHovered(zone.area)}
@@ -620,15 +627,15 @@ export default function NHLShotMap() {
 
         {/* Totals */}
         {totals && (() => {
-          const sv = vsAvg(totals.sog,           totals.sogLeagueAvg);
-          const gv = vsAvg(totals.goals,         totals.goalsLeagueAvg);
-          const pv = vsAvg(totals.shootingPctg,  totals.shootingPctgLeagueAvg);
+          const sv = vsAvg(totals.sog,          totals.sogLeagueAvg,          gtype === 3);
+          const gv = vsAvg(totals.goals,        totals.goalsLeagueAvg,        gtype === 3);
+          const pv = vsAvg(totals.shootingPctg, totals.shootingPctgLeagueAvg, gtype === 3);
           return (
             <div className="sg">
               {[
-                { lbl:"SHOTS ON GOAL", val:totals.sog,                                 rank:totals.sogRank,          v:sv },
-                { lbl:"GOALS",         val:totals.goals,                                rank:totals.goalsRank,        v:gv },
-                { lbl:"SHOOTING %",    val:`${(totals.shootingPctg*100).toFixed(1)}%`,  rank:totals.shootingPctgRank, v:pv },
+                { lbl:"SHOTS ON GOAL", val:totals.sog,                                rank:totals.sogRank,          v:sv },
+                { lbl:"GOALS",         val:totals.goals,                               rank:totals.goalsRank,        v:gv },
+                { lbl:"SHOOTING %",    val:`${(totals.shootingPctg*100).toFixed(1)}%`, rank:totals.shootingPctgRank, v:pv },
               ].map(s => (
                 <div className="sc" key={s.lbl}>
                   <div className="sn">{s.val}</div>
