@@ -83,29 +83,50 @@ async function fetchWithRetry(url, retries = 3) {
  * Returns { shots: {name, val}, goals: {name, val}, pctg: {name, val} }
  */
 function extractLeaders(clubStats) {
-  const skaters = clubStats?.skaters
-  if (!skaters?.length) return null
+  // NHL API returns skaters array — field names vary slightly by endpoint version
+  const skaters = clubStats?.skaters ?? clubStats?.data?.skaters
+  if (!skaters?.length) {
+    console.warn('  ⚠ No skaters array found. Top-level keys:', Object.keys(clubStats ?? {}))
+    return null
+  }
 
-  // Filter to skaters with meaningful shot counts (min 20 shots for sh% leader)
-  const qualified = skaters.filter(s => (s.shots ?? 0) >= 20)
+  // Probe field names from first skater
+  const sample = skaters[0]
+  console.log('  Skater fields:', Object.keys(sample).join(', '))
 
-  const byShots  = [...skaters].sort((a, b) => (b.shots ?? 0) - (a.shots ?? 0))[0]
-  const byGoals  = [...skaters].sort((a, b) => (b.goals ?? 0) - (a.goals ?? 0))[0]
-  const byPctg   = qualified.length
-    ? [...qualified].sort((a, b) => (b.shootingPctg ?? 0) - (a.shootingPctg ?? 0))[0]
-    : [...skaters].sort((a, b) => (b.shootingPctg ?? 0) - (a.shootingPctg ?? 0))[0]
+  // lastName/firstName may be string or { default: string }
+  const getName = p => {
+    const last  = p.lastName?.default  ?? p.lastName  ?? ''
+    const first = p.firstName?.default ?? p.firstName ?? ''
+    return { last, first }
+  }
 
-  const fmt = p => p ? {
-    name: p.lastName?.default ?? p.lastName ?? '—',
-    firstName: p.firstName?.default ?? p.firstName ?? '',
-    playerId: p.playerId,
-    val: null, // filled by caller
-  } : null
+  // shootingPctg may be 0.123 (decimal) or 12.3 (percent) — normalise to decimal
+  const getPctg = p => {
+    const raw = p.shootingPctg ?? p.shootingPct ?? 0
+    return raw > 1 ? raw / 100 : raw  // convert if already percentage
+  }
+
+  const getShots = p => p.shots ?? p.shotsOnGoal ?? 0
+  const getGoals = p => p.goals ?? 0
+
+  // Minimum 20 shots for sh% qualification
+  const qualified = skaters.filter(s => getShots(s) >= 20)
+
+  const byShots = [...skaters].sort((a, b) => getShots(b) - getShots(a))[0]
+  const byGoals = [...skaters].sort((a, b) => getGoals(b) - getGoals(a))[0]
+  const pool    = qualified.length ? qualified : skaters
+  const byPctg  = [...pool].sort((a, b) => getPctg(b) - getPctg(a))[0]
+
+  const fmt = (p, val) => {
+    const { last, first } = getName(p)
+    return { name: last, firstName: first, playerId: p.playerId, val }
+  }
 
   return {
-    shots: byShots ? { ...fmt(byShots), val: byShots.shots } : null,
-    goals: byGoals ? { ...fmt(byGoals), val: byGoals.goals } : null,
-    pctg:  byPctg  ? { ...fmt(byPctg),  val: +(byPctg.shootingPctg * 100).toFixed(1) } : null,
+    shots: byShots ? fmt(byShots, getShots(byShots)) : null,
+    goals: byGoals ? fmt(byGoals, getGoals(byGoals)) : null,
+    pctg:  byPctg  ? fmt(byPctg,  +(getPctg(byPctg) * 100).toFixed(1)) : null,
   }
 }
 

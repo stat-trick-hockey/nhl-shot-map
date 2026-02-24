@@ -1,9 +1,10 @@
 import { useState, useEffect } from "react";
 
 const ZONE_POS = {
-  // ── Above red line (y=110) ────────────────────────────────────────────
-  "Beyond Red Line":        { x:178, y:14,  w:284, h:38 },
-  "Offensive Neutral Zone": { x:150, y:56,  w:340, h:48 },
+  // ── Above red line (y=110) ───────────────────────────────────────────
+  "Beyond Red Line":        { x:178, y:14,  w:284, h:36 },
+  // ── Between red line (y=110) and blue line (y=196) ───────────────────
+  "Offensive Neutral Zone": { x:150, y:118, w:340, h:52 },
   // ── Point zones — just below blue line (y=196) ───────────────────────
   "L Point":                { x:52,  y:202, w:122, h:44 },
   "Center Point":           { x:188, y:202, w:264, h:44 },
@@ -16,14 +17,14 @@ const ZONE_POS = {
   "R Circle":               { x:422, y:256, w:132, h:62 },
   // ── Slot ─────────────────────────────────────────────────────────────
   "High Slot":              { x:224, y:250, w:192, h:60 },
-  "Low Slot":               { x:224, y:314, w:192, h:58 },
+  "Low Slot":               { x:224, y:308, w:192, h:52 },
   // ── Net sides ────────────────────────────────────────────────────────
-  "L Net Side":             { x:86,  y:322, w:132, h:52 },
-  "R Net Side":             { x:422, y:322, w:132, h:52 },
+  "L Net Side":             { x:86,  y:316, w:132, h:52 },
+  "R Net Side":             { x:422, y:316, w:132, h:52 },
   // ── Goal area (goal line y=380) ───────────────────────────────────────
-  "L Corner":               { x:12,  y:338, w:70,  h:54 },
-  "R Corner":               { x:558, y:338, w:70,  h:54 },
-  "Crease":                 { x:266, y:374, w:108, h:34 },
+  "L Corner":               { x:12,  y:336, w:70,  h:56 },
+  "R Corner":               { x:558, y:336, w:70,  h:56 },
+  "Crease":                 { x:266, y:356, w:108, h:26 },
   "Behind the Net":         { x:210, y:388, w:220, h:32 },
 };
 
@@ -590,9 +591,9 @@ export default function NHLShotMap() {
                 <line x1="60" y1="380" x2="580" y2="380" stroke="#5A1010" strokeWidth="2.5" clipPath="url(#rink-clip)"/>
 
                 {/* Goal crease fill */}
-                <path d="M 272 380 A 48 36 0 0 0 368 380 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
+                <path d="M 272 380 A 48 36 0 0 1 368 380 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
                 {/* Goal crease arc */}
-                <path d="M 272 380 A 48 36 0 0 0 368 380" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
+                <path d="M 272 380 A 48 36 0 0 1 368 380" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
                 {/* Goal posts */}
                 <rect x="293" y="398" width="54" height="15" rx="1.5" fill="none" stroke="#2A2A50" strokeWidth="2" clipPath="url(#rink-clip)"/>
 
