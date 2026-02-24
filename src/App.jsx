@@ -1,31 +1,30 @@
 import { useState, useEffect } from "react";
 
 const ZONE_POS = {
-  // ── Above red line ────────────────────────────────────────────────────
-  "Beyond Red Line":        { x:130, y:14,  w:380, h:40  },
-  // ── Between red (y=110) and blue (y=196) line ─────────────────────────
-  "Offensive Neutral Zone": { x:130, y:114, w:380, h:82  },
+  // ── Top: fills from boards to red line (y=110) ───────────────────────
+  "Beyond Red Line":        { x:130, y:14,  w:380, h:92  },
+  // ── Neutral: fills between red (y=110) and blue (y=196) line ─────────
+  "Offensive Neutral Zone": { x:130, y:114, w:380, h:78  },
   // ── Points row ───────────────────────────────────────────────────────
   "L Point":                { x:12,  y:200, w:118, h:50  },
   "Center Point":           { x:134, y:200, w:372, h:50  },
   "R Point":                { x:510, y:200, w:118, h:50  },
-  // ── Outside lanes (span both bands) ──────────────────────────────────
-  "Outside L":              { x:12,  y:254, w:64,  h:114 },
-  "Outside R":              { x:564, y:254, w:64,  h:114 },
+  // ── Outside lanes (same width as corners) ────────────────────────────
+  "Outside L":              { x:12,  y:254, w:64,  h:106 },
+  "Outside R":              { x:564, y:254, w:64,  h:106 },
   // ── Upper band ───────────────────────────────────────────────────────
   "L Circle":               { x:80,  y:254, w:136, h:64  },
   "High Slot":              { x:220, y:254, w:200, h:64  },
   "R Circle":               { x:424, y:254, w:136, h:64  },
-  // ── Lower band ───────────────────────────────────────────────────────
-  "L Net Side":             { x:80,  y:322, w:136, h:38  },
+  // ── Lower band: net sides reach goal line ────────────────────────────
+  "L Net Side":             { x:80,  y:322, w:136, h:54  },
   "Low Slot":               { x:220, y:322, w:200, h:38  },
-  "R Net Side":             { x:424, y:322, w:136, h:38  },
-  // ── Goal area — corners flank crease+behind-net as tall pillars ───────
-  "L Corner":               { x:12,  y:364, w:78,  h:16  },
-  "R Corner":               { x:550, y:364, w:78,  h:16  },
-  // ── Crease starts exactly at goal line (y=380), same width as Low Slot
+  "R Net Side":             { x:424, y:322, w:136, h:54  },
+  // ── Goal row: corners match outside lane width, all end at goal line ──
+  "L Corner":               { x:12,  y:364, w:64,  h:16  },
   "Crease":                 { x:220, y:364, w:200, h:16  },
-  // ── Behind the net ────────────────────────────────────────────────────
+  "R Corner":               { x:564, y:364, w:64,  h:16  },
+  // ── Behind net: full width below goal line ────────────────────────────
   "Behind the Net":         { x:12,  y:384, w:616, h:44  },
 };
 
