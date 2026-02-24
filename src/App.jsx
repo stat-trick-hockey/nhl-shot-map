@@ -3,29 +3,30 @@ import { useState, useEffect } from "react";
 const ZONE_POS = {
   // ── Above red line ────────────────────────────────────────────────────
   "Beyond Red Line":        { x:130, y:14,  w:380, h:40  },
-  // ── Between red line (y=110) and blue line (y=196) ────────────────────
+  // ── Between red (y=110) and blue (y=196) line ─────────────────────────
   "Offensive Neutral Zone": { x:130, y:114, w:380, h:82  },
-  // ── Points row: full width just below blue line ───────────────────────
+  // ── Points row ───────────────────────────────────────────────────────
   "L Point":                { x:12,  y:200, w:118, h:50  },
   "Center Point":           { x:134, y:200, w:372, h:50  },
   "R Point":                { x:510, y:200, w:118, h:50  },
-  // ── Outside lanes: span both circle and net-side bands ───────────────
+  // ── Outside lanes (span both bands) ──────────────────────────────────
   "Outside L":              { x:12,  y:254, w:64,  h:114 },
   "Outside R":              { x:564, y:254, w:64,  h:114 },
-  // ── Upper band: circles + high slot ──────────────────────────────────
+  // ── Upper band ───────────────────────────────────────────────────────
   "L Circle":               { x:80,  y:254, w:136, h:64  },
   "High Slot":              { x:220, y:254, w:200, h:64  },
   "R Circle":               { x:424, y:254, w:136, h:64  },
-  // ── Lower band: net sides + low slot ─────────────────────────────────
-  "L Net Side":             { x:80,  y:322, w:136, h:46  },
-  "Low Slot":               { x:220, y:322, w:200, h:46  },
-  "R Net Side":             { x:424, y:322, w:136, h:46  },
-  // ── Goal row: corners + crease filling full width ─────────────────────
-  "L Corner":               { x:12,  y:372, w:78,  h:24  },
-  "Crease":                 { x:94,  y:372, w:452, h:24  },
-  "R Corner":               { x:550, y:372, w:78,  h:24  },
-  // ── Behind net: full width below goal row ─────────────────────────────
-  "Behind the Net":         { x:12,  y:400, w:616, h:28  },
+  // ── Lower band ───────────────────────────────────────────────────────
+  "L Net Side":             { x:80,  y:322, w:136, h:38  },
+  "Low Slot":               { x:220, y:322, w:200, h:38  },
+  "R Net Side":             { x:424, y:322, w:136, h:38  },
+  // ── Goal area — corners flank crease+behind-net as tall pillars ───────
+  "L Corner":               { x:12,  y:364, w:78,  h:64  },
+  "R Corner":               { x:550, y:364, w:78,  h:64  },
+  // ── Crease starts exactly at goal line (y=380), same width as Low Slot
+  "Crease":                 { x:220, y:380, w:200, h:26  },
+  // ── Behind the net ────────────────────────────────────────────────────
+  "Behind the Net":         { x:220, y:410, w:200, h:18  },
 };
 
 function rankColor(r, total) {
