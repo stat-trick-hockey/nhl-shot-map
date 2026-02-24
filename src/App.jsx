@@ -1,23 +1,30 @@
 import { useState, useEffect } from "react";
 
 const ZONE_POS = {
-  "Low Slot":               { x:255, y:268, w:130, h:62 },
-  "High Slot":              { x:260, y:198, w:120, h:62 },
-  "Crease":                 { x:268, y:332, w:104, h:44 },
-  "L Circle":               { x:112, y:208, w:132, h:62 },
-  "R Circle":               { x:396, y:208, w:132, h:62 },
-  "L Net Side":             { x:115, y:276, w:132, h:50 },
-  "R Net Side":             { x:393, y:276, w:132, h:50 },
-  "L Point":                { x:56,  y:126, w:122, h:44 },
-  "R Point":                { x:462, y:126, w:122, h:44 },
-  "Center Point":           { x:195, y:126, w:250, h:44 },
-  "Outside L":              { x:34,  y:214, w:72,  h:56 },
-  "Outside R":              { x:534, y:214, w:72,  h:56 },
-  "Beyond Red Line":        { x:178, y:52,  w:284, h:40 },
-  "Offensive Neutral Zone": { x:162, y:94,  w:316, h:30 },
-  "Behind the Net":         { x:246, y:378, w:148, h:34 },
-  "L Corner":               { x:50,  y:328, w:112, h:46 },
-  "R Corner":               { x:478, y:328, w:112, h:46 },
+  // ── Above red line (y=110) ────────────────────────────────────────────
+  "Beyond Red Line":        { x:178, y:14,  w:284, h:38 },
+  "Offensive Neutral Zone": { x:150, y:56,  w:340, h:48 },
+  // ── Point zones — just below blue line (y=196) ───────────────────────
+  "L Point":                { x:52,  y:202, w:122, h:44 },
+  "Center Point":           { x:188, y:202, w:264, h:44 },
+  "R Point":                { x:466, y:202, w:122, h:44 },
+  // ── Outside lanes ────────────────────────────────────────────────────
+  "Outside L":              { x:12,  y:252, w:66,  h:68 },
+  "Outside R":              { x:562, y:252, w:66,  h:68 },
+  // ── Faceoff circles (SVG circles centered at cy=300) ─────────────────
+  "L Circle":               { x:86,  y:256, w:132, h:62 },
+  "R Circle":               { x:422, y:256, w:132, h:62 },
+  // ── Slot ─────────────────────────────────────────────────────────────
+  "High Slot":              { x:224, y:250, w:192, h:60 },
+  "Low Slot":               { x:224, y:314, w:192, h:58 },
+  // ── Net sides ────────────────────────────────────────────────────────
+  "L Net Side":             { x:86,  y:322, w:132, h:52 },
+  "R Net Side":             { x:422, y:322, w:132, h:52 },
+  // ── Goal area (goal line y=380) ───────────────────────────────────────
+  "L Corner":               { x:12,  y:338, w:70,  h:54 },
+  "R Corner":               { x:558, y:338, w:70,  h:54 },
+  "Crease":                 { x:266, y:374, w:108, h:34 },
+  "Behind the Net":         { x:210, y:388, w:220, h:32 },
 };
 
 function rankColor(r, total) {
