@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-02-24T08:36:52.691Z",
+  "fetchedAt": "2026-02-24T13:45:25.962Z",
   "teams": [
     {
       "id": 1,
@@ -13,7 +13,7 @@
       "name": "Islanders",
       "city": "New York",
       "abbr": "NYI",
-      "color": "#1A7BC4"
+      "color": "#1A6BC4"
     },
     {
       "id": 3,
@@ -25426,6 +25426,1608 @@
           "shootingPctgLeagueAvg": 0.151
         }
       ]
+    }
+  },
+  "leaders": {
+    "1_20252026_2": {
+      "shots": {
+        "name": "Meier",
+        "firstName": "Timo",
+        "playerId": 8478414,
+        "val": 176
+      },
+      "goals": {
+        "name": "Hischier",
+        "firstName": "Nico",
+        "playerId": 8480002,
+        "val": 19
+      },
+      "pctg": {
+        "name": "Glass",
+        "firstName": "Cody",
+        "playerId": 8479996,
+        "val": 16.9
+      }
+    },
+    "2_20252026_2": {
+      "shots": {
+        "name": "Lee",
+        "firstName": "Anders",
+        "playerId": 8475314,
+        "val": 140
+      },
+      "goals": {
+        "name": "Horvat",
+        "firstName": "Bo",
+        "playerId": 8477500,
+        "val": 24
+      },
+      "pctg": {
+        "name": "Pageau",
+        "firstName": "Jean-Gabriel",
+        "playerId": 8476419,
+        "val": 23.5
+      }
+    },
+    "3_20252026_2": {
+      "shots": {
+        "name": "Zibanejad",
+        "firstName": "Mika",
+        "playerId": 8476459,
+        "val": 151
+      },
+      "goals": {
+        "name": "Zibanejad",
+        "firstName": "Mika",
+        "playerId": 8476459,
+        "val": 23
+      },
+      "pctg": {
+        "name": "Raddysh",
+        "firstName": "Taylor",
+        "playerId": 8479390,
+        "val": 19.5
+      }
+    },
+    "4_20252026_2": {
+      "shots": {
+        "name": "Tippett",
+        "firstName": "Owen",
+        "playerId": 8480015,
+        "val": 147
+      },
+      "goals": {
+        "name": "Konecny",
+        "firstName": "Travis",
+        "playerId": 8478439,
+        "val": 22
+      },
+      "pctg": {
+        "name": "Grundstrom",
+        "firstName": "Carl",
+        "playerId": 8479336,
+        "val": 25.8
+      }
+    },
+    "5_20252026_2": {
+      "shots": {
+        "name": "Crosby",
+        "firstName": "Sidney",
+        "playerId": 8471675,
+        "val": 132
+      },
+      "goals": {
+        "name": "Crosby",
+        "firstName": "Sidney",
+        "playerId": 8471675,
+        "val": 27
+      },
+      "pctg": {
+        "name": "Crosby",
+        "firstName": "Sidney",
+        "playerId": 8471675,
+        "val": 20.5
+      }
+    },
+    "6_20252026_2": {
+      "shots": {
+        "name": "Pastrnak",
+        "firstName": "David",
+        "playerId": 8477956,
+        "val": 183
+      },
+      "goals": {
+        "name": "Geekie",
+        "firstName": "Morgan",
+        "playerId": 8479987,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Geekie",
+        "firstName": "Morgan",
+        "playerId": 8479987,
+        "val": 24.8
+      }
+    },
+    "7_20252026_2": {
+      "shots": {
+        "name": "Thompson",
+        "firstName": "Tage",
+        "playerId": 8479420,
+        "val": 204
+      },
+      "goals": {
+        "name": "Thompson",
+        "firstName": "Tage",
+        "playerId": 8479420,
+        "val": 30
+      },
+      "pctg": {
+        "name": "Ostlund",
+        "firstName": "Noah",
+        "playerId": 8483500,
+        "val": 23.3
+      }
+    },
+    "8_20252026_2": {
+      "shots": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 171
+      },
+      "goals": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Newhook",
+        "firstName": "Alex",
+        "playerId": 8481618,
+        "val": 25
+      }
+    },
+    "9_20252026_2": {
+      "shots": {
+        "name": "Stützle",
+        "firstName": "Tim",
+        "playerId": 8482116,
+        "val": 145
+      },
+      "goals": {
+        "name": "Stützle",
+        "firstName": "Tim",
+        "playerId": 8482116,
+        "val": 28
+      },
+      "pctg": {
+        "name": "Stützle",
+        "firstName": "Tim",
+        "playerId": 8482116,
+        "val": 19.3
+      }
+    },
+    "10_20252026_2": {
+      "shots": {
+        "name": "Matthews",
+        "firstName": "Auston",
+        "playerId": 8479318,
+        "val": 193
+      },
+      "goals": {
+        "name": "Matthews",
+        "firstName": "Auston",
+        "playerId": 8479318,
+        "val": 26
+      },
+      "pctg": {
+        "name": "Nylander",
+        "firstName": "William",
+        "playerId": 8477939,
+        "val": 20.9
+      }
+    },
+    "12_20252026_2": {
+      "shots": {
+        "name": "Jarvis",
+        "firstName": "Seth",
+        "playerId": 8482093,
+        "val": 155
+      },
+      "goals": {
+        "name": "Jarvis",
+        "firstName": "Seth",
+        "playerId": 8482093,
+        "val": 25
+      },
+      "pctg": {
+        "name": "Staal",
+        "firstName": "Jordan",
+        "playerId": 8473533,
+        "val": 19.7
+      }
+    },
+    "13_20252026_2": {
+      "shots": {
+        "name": "Reinhart",
+        "firstName": "Sam",
+        "playerId": 8477933,
+        "val": 148
+      },
+      "goals": {
+        "name": "Reinhart",
+        "firstName": "Sam",
+        "playerId": 8477933,
+        "val": 27
+      },
+      "pctg": {
+        "name": "Marchand",
+        "firstName": "Brad",
+        "playerId": 8473419,
+        "val": 19.7
+      }
+    },
+    "14_20252026_2": {
+      "shots": {
+        "name": "Kucherov",
+        "firstName": "Nikita",
+        "playerId": 8476453,
+        "val": 156
+      },
+      "goals": {
+        "name": "Kucherov",
+        "firstName": "Nikita",
+        "playerId": 8476453,
+        "val": 29
+      },
+      "pctg": {
+        "name": "Kucherov",
+        "firstName": "Nikita",
+        "playerId": 8476453,
+        "val": 18.6
+      }
+    },
+    "15_20252026_2": {
+      "shots": {
+        "name": "Chychrun",
+        "firstName": "Jakob",
+        "playerId": 8479345,
+        "val": 182
+      },
+      "goals": {
+        "name": "Wilson",
+        "firstName": "Tom",
+        "playerId": 8476880,
+        "val": 23
+      },
+      "pctg": {
+        "name": "Wilson",
+        "firstName": "Tom",
+        "playerId": 8476880,
+        "val": 21.3
+      }
+    },
+    "16_20252026_2": {
+      "shots": {
+        "name": "Bedard",
+        "firstName": "Connor",
+        "playerId": 8484144,
+        "val": 143
+      },
+      "goals": {
+        "name": "Bertuzzi",
+        "firstName": "Tyler",
+        "playerId": 8477479,
+        "val": 25
+      },
+      "pctg": {
+        "name": "Bertuzzi",
+        "firstName": "Tyler",
+        "playerId": 8477479,
+        "val": 21
+      }
+    },
+    "17_20252026_2": {
+      "shots": {
+        "name": "DeBrincat",
+        "firstName": "Alex",
+        "playerId": 8479337,
+        "val": 205
+      },
+      "goals": {
+        "name": "DeBrincat",
+        "firstName": "Alex",
+        "playerId": 8479337,
+        "val": 30
+      },
+      "pctg": {
+        "name": "van Riemsdyk",
+        "firstName": "James",
+        "playerId": 8474037,
+        "val": 17.1
+      }
+    },
+    "18_20252026_2": {
+      "shots": {
+        "name": "Forsberg",
+        "firstName": "Filip",
+        "playerId": 8476887,
+        "val": 173
+      },
+      "goals": {
+        "name": "Stamkos",
+        "firstName": "Steven",
+        "playerId": 8474564,
+        "val": 28
+      },
+      "pctg": {
+        "name": "Stamkos",
+        "firstName": "Steven",
+        "playerId": 8474564,
+        "val": 20
+      }
+    },
+    "19_20252026_2": {
+      "shots": {
+        "name": "Kyrou",
+        "firstName": "Jordan",
+        "playerId": 8479385,
+        "val": 123
+      },
+      "goals": {
+        "name": "Neighbours",
+        "firstName": "Jake",
+        "playerId": 8482089,
+        "val": 14
+      },
+      "pctg": {
+        "name": "Neighbours",
+        "firstName": "Jake",
+        "playerId": 8482089,
+        "val": 23.3
+      }
+    },
+    "20_20252026_2": {
+      "shots": {
+        "name": "Kadri",
+        "firstName": "Nazem",
+        "playerId": 8475172,
+        "val": 155
+      },
+      "goals": {
+        "name": "Coronato",
+        "firstName": "Matt",
+        "playerId": 8482679,
+        "val": 14
+      },
+      "pctg": {
+        "name": "Frost",
+        "firstName": "Morgan",
+        "playerId": 8480028,
+        "val": 12.5
+      }
+    },
+    "21_20252026_2": {
+      "shots": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 244
+      },
+      "goals": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 40
+      },
+      "pctg": {
+        "name": "Nelson",
+        "firstName": "Brock",
+        "playerId": 8475754,
+        "val": 23.2
+      }
+    },
+    "22_20252026_2": {
+      "shots": {
+        "name": "McDavid",
+        "firstName": "Connor",
+        "playerId": 8478402,
+        "val": 220
+      },
+      "goals": {
+        "name": "McDavid",
+        "firstName": "Connor",
+        "playerId": 8478402,
+        "val": 34
+      },
+      "pctg": {
+        "name": "Hyman",
+        "firstName": "Zach",
+        "playerId": 8475786,
+        "val": 18.5
+      }
+    },
+    "23_20252026_2": {
+      "shots": {
+        "name": "DeBrusk",
+        "firstName": "Jake",
+        "playerId": 8478498,
+        "val": 156
+      },
+      "goals": {
+        "name": "DeBrusk",
+        "firstName": "Jake",
+        "playerId": 8478498,
+        "val": 13
+      },
+      "pctg": {
+        "name": "Sasson",
+        "firstName": "Max",
+        "playerId": 8484136,
+        "val": 20.8
+      }
+    },
+    "24_20252026_2": {
+      "shots": {
+        "name": "Gauthier",
+        "firstName": "Cutter",
+        "playerId": 8483445,
+        "val": 208
+      },
+      "goals": {
+        "name": "Gauthier",
+        "firstName": "Cutter",
+        "playerId": 8483445,
+        "val": 25
+      },
+      "pctg": {
+        "name": "Kreider",
+        "firstName": "Chris",
+        "playerId": 8475184,
+        "val": 19.8
+      }
+    },
+    "25_20252026_2": {
+      "shots": {
+        "name": "Robertson",
+        "firstName": "Jason",
+        "playerId": 8480027,
+        "val": 205
+      },
+      "goals": {
+        "name": "Robertson",
+        "firstName": "Jason",
+        "playerId": 8480027,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Seguin",
+        "firstName": "Tyler",
+        "playerId": 8475794,
+        "val": 22.6
+      }
+    },
+    "26_20252026_2": {
+      "shots": {
+        "name": "Panarin",
+        "firstName": "Artemi",
+        "playerId": 8478550,
+        "val": 158
+      },
+      "goals": {
+        "name": "Kempe",
+        "firstName": "Adrian",
+        "playerId": 8477960,
+        "val": 20
+      },
+      "pctg": {
+        "name": "Kuzmenko",
+        "firstName": "Andrei",
+        "playerId": 8483808,
+        "val": 18.8
+      }
+    },
+    "28_20252026_2": {
+      "shots": {
+        "name": "Celebrini",
+        "firstName": "Macklin",
+        "playerId": 8484801,
+        "val": 190
+      },
+      "goals": {
+        "name": "Celebrini",
+        "firstName": "Macklin",
+        "playerId": 8484801,
+        "val": 28
+      },
+      "pctg": {
+        "name": "Regenda",
+        "firstName": "Pavol",
+        "playerId": 8483630,
+        "val": 23.5
+      }
+    },
+    "29_20252026_2": {
+      "shots": {
+        "name": "Werenski",
+        "firstName": "Zach",
+        "playerId": 8478460,
+        "val": 183
+      },
+      "goals": {
+        "name": "Werenski",
+        "firstName": "Zach",
+        "playerId": 8478460,
+        "val": 20
+      },
+      "pctg": {
+        "name": "Marchment",
+        "firstName": "Mason",
+        "playerId": 8478975,
+        "val": 18.3
+      }
+    },
+    "30_20252026_2": {
+      "shots": {
+        "name": "Kaprizov",
+        "firstName": "Kirill",
+        "playerId": 8478864,
+        "val": 206
+      },
+      "goals": {
+        "name": "Kaprizov",
+        "firstName": "Kirill",
+        "playerId": 8478864,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Boldy",
+        "firstName": "Matt",
+        "playerId": 8481557,
+        "val": 18.5
+      }
+    },
+    "52_20252026_2": {
+      "shots": {
+        "name": "Connor",
+        "firstName": "Kyle",
+        "playerId": 8478398,
+        "val": 185
+      },
+      "goals": {
+        "name": "Scheifele",
+        "firstName": "Mark",
+        "playerId": 8476460,
+        "val": 27
+      },
+      "pctg": {
+        "name": "Scheifele",
+        "firstName": "Mark",
+        "playerId": 8476460,
+        "val": 23.3
+      }
+    },
+    "54_20252026_2": {
+      "shots": {
+        "name": "Eichel",
+        "firstName": "Jack",
+        "playerId": 8478403,
+        "val": 187
+      },
+      "goals": {
+        "name": "Dorofeyev",
+        "firstName": "Pavel",
+        "playerId": 8481604,
+        "val": 26
+      },
+      "pctg": {
+        "name": "Stone",
+        "firstName": "Mark",
+        "playerId": 8475913,
+        "val": 22.8
+      }
+    },
+    "55_20252026_2": {
+      "shots": {
+        "name": "Eberle",
+        "firstName": "Jordan",
+        "playerId": 8474586,
+        "val": 119
+      },
+      "goals": {
+        "name": "Eberle",
+        "firstName": "Jordan",
+        "playerId": 8474586,
+        "val": 20
+      },
+      "pctg": {
+        "name": "McCann",
+        "firstName": "Jared",
+        "playerId": 8477955,
+        "val": 20.3
+      }
+    },
+    "59_20252026_2": {
+      "shots": {
+        "name": "Guenther",
+        "firstName": "Dylan",
+        "playerId": 8482699,
+        "val": 178
+      },
+      "goals": {
+        "name": "Guenther",
+        "firstName": "Dylan",
+        "playerId": 8482699,
+        "val": 25
+      },
+      "pctg": {
+        "name": "Yamamoto",
+        "firstName": "Kailer",
+        "playerId": 8479977,
+        "val": 27.3
+      }
+    },
+    "1_20242025_2": {
+      "shots": {
+        "name": "Meier",
+        "firstName": "Timo",
+        "playerId": 8478414,
+        "val": 239
+      },
+      "goals": {
+        "name": "Hischier",
+        "firstName": "Nico",
+        "playerId": 8480002,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Hischier",
+        "firstName": "Nico",
+        "playerId": 8480002,
+        "val": 18.7
+      }
+    },
+    "2_20242025_2": {
+      "shots": {
+        "name": "Horvat",
+        "firstName": "Bo",
+        "playerId": 8477500,
+        "val": 243
+      },
+      "goals": {
+        "name": "Lee",
+        "firstName": "Anders",
+        "playerId": 8475314,
+        "val": 29
+      },
+      "pctg": {
+        "name": "Holmstrom",
+        "firstName": "Simon",
+        "playerId": 8481601,
+        "val": 20.8
+      }
+    },
+    "3_20242025_2": {
+      "shots": {
+        "name": "Panarin",
+        "firstName": "Artemi",
+        "playerId": 8478550,
+        "val": 237
+      },
+      "goals": {
+        "name": "Panarin",
+        "firstName": "Artemi",
+        "playerId": 8478550,
+        "val": 37
+      },
+      "pctg": {
+        "name": "Miller",
+        "firstName": "J.T.",
+        "playerId": 8476468,
+        "val": 23.6
+      }
+    },
+    "4_20242025_2": {
+      "shots": {
+        "name": "Michkov",
+        "firstName": "Matvei",
+        "playerId": 8484387,
+        "val": 199
+      },
+      "goals": {
+        "name": "Michkov",
+        "firstName": "Matvei",
+        "playerId": 8484387,
+        "val": 26
+      },
+      "pctg": {
+        "name": "Foerster",
+        "firstName": "Tyson",
+        "playerId": 8482159,
+        "val": 17.6
+      }
+    },
+    "5_20242025_2": {
+      "shots": {
+        "name": "Crosby",
+        "firstName": "Sidney",
+        "playerId": 8471675,
+        "val": 227
+      },
+      "goals": {
+        "name": "Rakell",
+        "firstName": "Rickard",
+        "playerId": 8476483,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Lizotte",
+        "firstName": "Blake",
+        "playerId": 8481481,
+        "val": 21.6
+      }
+    },
+    "6_20242025_2": {
+      "shots": {
+        "name": "Pastrnak",
+        "firstName": "David",
+        "playerId": 8477956,
+        "val": 319
+      },
+      "goals": {
+        "name": "Pastrnak",
+        "firstName": "David",
+        "playerId": 8477956,
+        "val": 43
+      },
+      "pctg": {
+        "name": "Geekie",
+        "firstName": "Morgan",
+        "playerId": 8479987,
+        "val": 22
+      }
+    },
+    "7_20242025_2": {
+      "shots": {
+        "name": "Thompson",
+        "firstName": "Tage",
+        "playerId": 8479420,
+        "val": 242
+      },
+      "goals": {
+        "name": "Thompson",
+        "firstName": "Tage",
+        "playerId": 8479420,
+        "val": 44
+      },
+      "pctg": {
+        "name": "McLeod",
+        "firstName": "Ryan",
+        "playerId": 8480802,
+        "val": 20.6
+      }
+    },
+    "8_20242025_2": {
+      "shots": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 240
+      },
+      "goals": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 37
+      },
+      "pctg": {
+        "name": "Suzuki",
+        "firstName": "Nick",
+        "playerId": 8480018,
+        "val": 17.4
+      }
+    },
+    "9_20242025_2": {
+      "shots": {
+        "name": "Tkachuk",
+        "firstName": "Brady",
+        "playerId": 8480801,
+        "val": 296
+      },
+      "goals": {
+        "name": "Tkachuk",
+        "firstName": "Brady",
+        "playerId": 8480801,
+        "val": 29
+      },
+      "pctg": {
+        "name": "Norris",
+        "firstName": "Josh",
+        "playerId": 8480064,
+        "val": 21.3
+      }
+    },
+    "10_20242025_2": {
+      "shots": {
+        "name": "Matthews",
+        "firstName": "Auston",
+        "playerId": 8479318,
+        "val": 261
+      },
+      "goals": {
+        "name": "Nylander",
+        "firstName": "William",
+        "playerId": 8477939,
+        "val": 45
+      },
+      "pctg": {
+        "name": "Knies",
+        "firstName": "Matthew",
+        "playerId": 8482720,
+        "val": 19.1
+      }
+    },
+    "12_20242025_2": {
+      "shots": {
+        "name": "Aho",
+        "firstName": "Sebastian",
+        "playerId": 8478427,
+        "val": 207
+      },
+      "goals": {
+        "name": "Jarvis",
+        "firstName": "Seth",
+        "playerId": 8482093,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Jankowski",
+        "firstName": "Mark",
+        "playerId": 8476873,
+        "val": 38.1
+      }
+    },
+    "13_20242025_2": {
+      "shots": {
+        "name": "Verhaeghe",
+        "firstName": "Carter",
+        "playerId": 8477409,
+        "val": 242
+      },
+      "goals": {
+        "name": "Reinhart",
+        "firstName": "Sam",
+        "playerId": 8477933,
+        "val": 39
+      },
+      "pctg": {
+        "name": "Reinhart",
+        "firstName": "Sam",
+        "playerId": 8477933,
+        "val": 18.3
+      }
+    },
+    "14_20242025_2": {
+      "shots": {
+        "name": "Kucherov",
+        "firstName": "Nikita",
+        "playerId": 8476453,
+        "val": 265
+      },
+      "goals": {
+        "name": "Point",
+        "firstName": "Brayden",
+        "playerId": 8478010,
+        "val": 42
+      },
+      "pctg": {
+        "name": "Point",
+        "firstName": "Brayden",
+        "playerId": 8478010,
+        "val": 22.2
+      }
+    },
+    "15_20242025_2": {
+      "shots": {
+        "name": "Ovechkin",
+        "firstName": "Alex",
+        "playerId": 8471214,
+        "val": 237
+      },
+      "goals": {
+        "name": "Ovechkin",
+        "firstName": "Alex",
+        "playerId": 8471214,
+        "val": 44
+      },
+      "pctg": {
+        "name": "Vrana",
+        "firstName": "Jakub",
+        "playerId": 8477944,
+        "val": 25
+      }
+    },
+    "16_20242025_2": {
+      "shots": {
+        "name": "Bedard",
+        "firstName": "Connor",
+        "playerId": 8484144,
+        "val": 195
+      },
+      "goals": {
+        "name": "Donato",
+        "firstName": "Ryan",
+        "playerId": 8477987,
+        "val": 31
+      },
+      "pctg": {
+        "name": "Bertuzzi",
+        "firstName": "Tyler",
+        "playerId": 8477479,
+        "val": 17.6
+      }
+    },
+    "17_20242025_2": {
+      "shots": {
+        "name": "DeBrincat",
+        "firstName": "Alex",
+        "playerId": 8479337,
+        "val": 244
+      },
+      "goals": {
+        "name": "DeBrincat",
+        "firstName": "Alex",
+        "playerId": 8479337,
+        "val": 39
+      },
+      "pctg": {
+        "name": "DeBrincat",
+        "firstName": "Alex",
+        "playerId": 8479337,
+        "val": 16
+      }
+    },
+    "18_20242025_2": {
+      "shots": {
+        "name": "Forsberg",
+        "firstName": "Filip",
+        "playerId": 8476887,
+        "val": 281
+      },
+      "goals": {
+        "name": "Forsberg",
+        "firstName": "Filip",
+        "playerId": 8476887,
+        "val": 31
+      },
+      "pctg": {
+        "name": "Stamkos",
+        "firstName": "Steven",
+        "playerId": 8474564,
+        "val": 15.5
+      }
+    },
+    "19_20242025_2": {
+      "shots": {
+        "name": "Kyrou",
+        "firstName": "Jordan",
+        "playerId": 8479385,
+        "val": 239
+      },
+      "goals": {
+        "name": "Kyrou",
+        "firstName": "Jordan",
+        "playerId": 8479385,
+        "val": 36
+      },
+      "pctg": {
+        "name": "Neighbours",
+        "firstName": "Jake",
+        "playerId": 8482089,
+        "val": 18
+      }
+    },
+    "20_20242025_2": {
+      "shots": {
+        "name": "Kadri",
+        "firstName": "Nazem",
+        "playerId": 8475172,
+        "val": 279
+      },
+      "goals": {
+        "name": "Kadri",
+        "firstName": "Nazem",
+        "playerId": 8475172,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Huberdeau",
+        "firstName": "Jonathan",
+        "playerId": 8476456,
+        "val": 18.3
+      }
+    },
+    "21_20242025_2": {
+      "shots": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 320
+      },
+      "goals": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 32
+      },
+      "pctg": {
+        "name": "Drouin",
+        "firstName": "Jonathan",
+        "playerId": 8477494,
+        "val": 19.6
+      }
+    },
+    "22_20242025_2": {
+      "shots": {
+        "name": "Draisaitl",
+        "firstName": "Leon",
+        "playerId": 8477934,
+        "val": 240
+      },
+      "goals": {
+        "name": "Draisaitl",
+        "firstName": "Leon",
+        "playerId": 8477934,
+        "val": 52
+      },
+      "pctg": {
+        "name": "Draisaitl",
+        "firstName": "Leon",
+        "playerId": 8477934,
+        "val": 21.7
+      }
+    },
+    "23_20242025_2": {
+      "shots": {
+        "name": "Hughes",
+        "firstName": "Quinn",
+        "playerId": 8480800,
+        "val": 192
+      },
+      "goals": {
+        "name": "DeBrusk",
+        "firstName": "Jake",
+        "playerId": 8478498,
+        "val": 28
+      },
+      "pctg": {
+        "name": "Räty",
+        "firstName": "Aatu",
+        "playerId": 8482691,
+        "val": 20.6
+      }
+    },
+    "24_20242025_2": {
+      "shots": {
+        "name": "Vatrano",
+        "firstName": "Frank",
+        "playerId": 8478366,
+        "val": 234
+      },
+      "goals": {
+        "name": "McTavish",
+        "firstName": "Mason",
+        "playerId": 8482745,
+        "val": 22
+      },
+      "pctg": {
+        "name": "Colangelo",
+        "firstName": "Sam",
+        "playerId": 8482118,
+        "val": 24.4
+      }
+    },
+    "25_20242025_2": {
+      "shots": {
+        "name": "Robertson",
+        "firstName": "Jason",
+        "playerId": 8480027,
+        "val": 211
+      },
+      "goals": {
+        "name": "Robertson",
+        "firstName": "Jason",
+        "playerId": 8480027,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Duchene",
+        "firstName": "Matt",
+        "playerId": 8475168,
+        "val": 19.7
+      }
+    },
+    "26_20242025_2": {
+      "shots": {
+        "name": "Fiala",
+        "firstName": "Kevin",
+        "playerId": 8477942,
+        "val": 244
+      },
+      "goals": {
+        "name": "Fiala",
+        "firstName": "Kevin",
+        "playerId": 8477942,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Kopitar",
+        "firstName": "Anze",
+        "playerId": 8471685,
+        "val": 21.4
+      }
+    },
+    "28_20242025_2": {
+      "shots": {
+        "name": "Celebrini",
+        "firstName": "Macklin",
+        "playerId": 8484801,
+        "val": 236
+      },
+      "goals": {
+        "name": "Toffoli",
+        "firstName": "Tyler",
+        "playerId": 8475726,
+        "val": 30
+      },
+      "pctg": {
+        "name": "Sturm",
+        "firstName": "Nico",
+        "playerId": 8481477,
+        "val": 18.4
+      }
+    },
+    "29_20242025_2": {
+      "shots": {
+        "name": "Werenski",
+        "firstName": "Zach",
+        "playerId": 8478460,
+        "val": 298
+      },
+      "goals": {
+        "name": "Marchenko",
+        "firstName": "Kirill",
+        "playerId": 8480893,
+        "val": 31
+      },
+      "pctg": {
+        "name": "Johnson",
+        "firstName": "Kent",
+        "playerId": 8482660,
+        "val": 19.5
+      }
+    },
+    "30_20242025_2": {
+      "shots": {
+        "name": "Boldy",
+        "firstName": "Matt",
+        "playerId": 8481557,
+        "val": 271
+      },
+      "goals": {
+        "name": "Boldy",
+        "firstName": "Matt",
+        "playerId": 8481557,
+        "val": 27
+      },
+      "pctg": {
+        "name": "Rossi",
+        "firstName": "Marco",
+        "playerId": 8482079,
+        "val": 17.6
+      }
+    },
+    "52_20242025_2": {
+      "shots": {
+        "name": "Connor",
+        "firstName": "Kyle",
+        "playerId": 8478398,
+        "val": 267
+      },
+      "goals": {
+        "name": "Connor",
+        "firstName": "Kyle",
+        "playerId": 8478398,
+        "val": 41
+      },
+      "pctg": {
+        "name": "Scheifele",
+        "firstName": "Mark",
+        "playerId": 8476460,
+        "val": 21.5
+      }
+    },
+    "54_20242025_2": {
+      "shots": {
+        "name": "Dorofeyev",
+        "firstName": "Pavel",
+        "playerId": 8481604,
+        "val": 254
+      },
+      "goals": {
+        "name": "Dorofeyev",
+        "firstName": "Pavel",
+        "playerId": 8481604,
+        "val": 35
+      },
+      "pctg": {
+        "name": "Barbashev",
+        "firstName": "Ivan",
+        "playerId": 8477964,
+        "val": 20.7
+      }
+    },
+    "55_20242025_2": {
+      "shots": {
+        "name": "Montour",
+        "firstName": "Brandon",
+        "playerId": 8477986,
+        "val": 231
+      },
+      "goals": {
+        "name": "Schwartz",
+        "firstName": "Jaden",
+        "playerId": 8475768,
+        "val": 26
+      },
+      "pctg": {
+        "name": "Wright",
+        "firstName": "Shane",
+        "playerId": 8483524,
+        "val": 20.9
+      }
+    },
+    "59_20242025_2": {
+      "shots": {
+        "name": "Keller",
+        "firstName": "Clayton",
+        "playerId": 8479343,
+        "val": 218
+      },
+      "goals": {
+        "name": "Keller",
+        "firstName": "Clayton",
+        "playerId": 8479343,
+        "val": 30
+      },
+      "pctg": {
+        "name": "Cooley",
+        "firstName": "Logan",
+        "playerId": 8483431,
+        "val": 15.8
+      }
+    },
+    "1_20242025_3": {
+      "shots": {
+        "name": "Bratt",
+        "firstName": "Jesper",
+        "playerId": 8479407,
+        "val": 20
+      },
+      "goals": {
+        "name": "Hischier",
+        "firstName": "Nico",
+        "playerId": 8480002,
+        "val": 4
+      },
+      "pctg": {
+        "name": "Bratt",
+        "firstName": "Jesper",
+        "playerId": 8479407,
+        "val": 5
+      }
+    },
+    "8_20242025_3": {
+      "shots": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 24
+      },
+      "goals": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 3
+      },
+      "pctg": {
+        "name": "Caufield",
+        "firstName": "Cole",
+        "playerId": 8481540,
+        "val": 12.5
+      }
+    },
+    "9_20242025_3": {
+      "shots": {
+        "name": "Tkachuk",
+        "firstName": "Brady",
+        "playerId": 8480801,
+        "val": 22
+      },
+      "goals": {
+        "name": "Tkachuk",
+        "firstName": "Brady",
+        "playerId": 8480801,
+        "val": 4
+      },
+      "pctg": {
+        "name": "Tkachuk",
+        "firstName": "Brady",
+        "playerId": 8480801,
+        "val": 18.2
+      }
+    },
+    "10_20242025_3": {
+      "shots": {
+        "name": "Matthews",
+        "firstName": "Auston",
+        "playerId": 8479318,
+        "val": 47
+      },
+      "goals": {
+        "name": "Nylander",
+        "firstName": "William",
+        "playerId": 8477939,
+        "val": 6
+      },
+      "pctg": {
+        "name": "Knies",
+        "firstName": "Matthew",
+        "playerId": 8482720,
+        "val": 17.2
+      }
+    },
+    "12_20242025_3": {
+      "shots": {
+        "name": "Aho",
+        "firstName": "Sebastian",
+        "playerId": 8478427,
+        "val": 41
+      },
+      "goals": {
+        "name": "Svechnikov",
+        "firstName": "Andrei",
+        "playerId": 8480830,
+        "val": 8
+      },
+      "pctg": {
+        "name": "Stankoven",
+        "firstName": "Logan",
+        "playerId": 8482702,
+        "val": 20.8
+      }
+    },
+    "13_20242025_3": {
+      "shots": {
+        "name": "Bennett",
+        "firstName": "Sam",
+        "playerId": 8477935,
+        "val": 69
+      },
+      "goals": {
+        "name": "Bennett",
+        "firstName": "Sam",
+        "playerId": 8477935,
+        "val": 15
+      },
+      "pctg": {
+        "name": "Bennett",
+        "firstName": "Sam",
+        "playerId": 8477935,
+        "val": 21.7
+      }
+    },
+    "14_20242025_3": {
+      "shots": {
+        "name": "Guentzel",
+        "firstName": "Jake",
+        "playerId": 8477404,
+        "val": 16
+      },
+      "goals": {
+        "name": "Guentzel",
+        "firstName": "Jake",
+        "playerId": 8477404,
+        "val": 3
+      },
+      "pctg": {
+        "name": "Glendening",
+        "firstName": "Luke",
+        "playerId": 8476822,
+        "val": 100
+      }
+    },
+    "15_20242025_3": {
+      "shots": {
+        "name": "Ovechkin",
+        "firstName": "Alex",
+        "playerId": 8471214,
+        "val": 33
+      },
+      "goals": {
+        "name": "Ovechkin",
+        "firstName": "Alex",
+        "playerId": 8471214,
+        "val": 5
+      },
+      "pctg": {
+        "name": "Ovechkin",
+        "firstName": "Alex",
+        "playerId": 8471214,
+        "val": 15.2
+      }
+    },
+    "19_20242025_3": {
+      "shots": {
+        "name": "Kyrou",
+        "firstName": "Jordan",
+        "playerId": 8479385,
+        "val": 18
+      },
+      "goals": {
+        "name": "Buchnevich",
+        "firstName": "Pavel",
+        "playerId": 8477402,
+        "val": 3
+      },
+      "pctg": {
+        "name": "Faksa",
+        "firstName": "Radek",
+        "playerId": 8476889,
+        "val": 50
+      }
+    },
+    "21_20242025_3": {
+      "shots": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 39
+      },
+      "goals": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 7
+      },
+      "pctg": {
+        "name": "MacKinnon",
+        "firstName": "Nathan",
+        "playerId": 8477492,
+        "val": 17.9
+      }
+    },
+    "22_20242025_3": {
+      "shots": {
+        "name": "McDavid",
+        "firstName": "Connor",
+        "playerId": 8478402,
+        "val": 80
+      },
+      "goals": {
+        "name": "Draisaitl",
+        "firstName": "Leon",
+        "playerId": 8477934,
+        "val": 11
+      },
+      "pctg": {
+        "name": "Perry",
+        "firstName": "Corey",
+        "playerId": 8470621,
+        "val": 24.4
+      }
+    },
+    "25_20242025_3": {
+      "shots": {
+        "name": "Rantanen",
+        "firstName": "Mikko",
+        "playerId": 8478420,
+        "val": 50
+      },
+      "goals": {
+        "name": "Rantanen",
+        "firstName": "Mikko",
+        "playerId": 8478420,
+        "val": 9
+      },
+      "pctg": {
+        "name": "Robertson",
+        "firstName": "Jason",
+        "playerId": 8480027,
+        "val": 18.2
+      }
+    },
+    "26_20242025_3": {
+      "shots": {
+        "name": "Fiala",
+        "firstName": "Kevin",
+        "playerId": 8477942,
+        "val": 25
+      },
+      "goals": {
+        "name": "Kempe",
+        "firstName": "Adrian",
+        "playerId": 8477960,
+        "val": 4
+      },
+      "pctg": {
+        "name": "Kempe",
+        "firstName": "Adrian",
+        "playerId": 8477960,
+        "val": 19
+      }
+    },
+    "30_20242025_3": {
+      "shots": {
+        "name": "Kaprizov",
+        "firstName": "Kirill",
+        "playerId": 8478864,
+        "val": 22
+      },
+      "goals": {
+        "name": "Kaprizov",
+        "firstName": "Kirill",
+        "playerId": 8478864,
+        "val": 5
+      },
+      "pctg": {
+        "name": "Boldy",
+        "firstName": "Matt",
+        "playerId": 8481557,
+        "val": 25
+      }
+    },
+    "52_20242025_3": {
+      "shots": {
+        "name": "Connor",
+        "firstName": "Kyle",
+        "playerId": 8478398,
+        "val": 45
+      },
+      "goals": {
+        "name": "Scheifele",
+        "firstName": "Mark",
+        "playerId": 8476460,
+        "val": 5
+      },
+      "pctg": {
+        "name": "Scheifele",
+        "firstName": "Mark",
+        "playerId": 8476460,
+        "val": 22.7
+      }
+    },
+    "54_20242025_3": {
+      "shots": {
+        "name": "Eichel",
+        "firstName": "Jack",
+        "playerId": 8478403,
+        "val": 30
+      },
+      "goals": {
+        "name": "Stone",
+        "firstName": "Mark",
+        "playerId": 8475913,
+        "val": 4
+      },
+      "pctg": {
+        "name": "Stone",
+        "firstName": "Mark",
+        "playerId": 8475913,
+        "val": 19
+      }
     }
   },
   "missingKeys": [
