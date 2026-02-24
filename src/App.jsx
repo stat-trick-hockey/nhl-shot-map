@@ -1,31 +1,31 @@
 import { useState, useEffect } from "react";
 
 const ZONE_POS = {
-  // ── Above red line (y=110) ───────────────────────────────────────────
-  "Beyond Red Line":        { x:178, y:14,  w:284, h:36 },
-  // ── Between red line (y=110) and blue line (y=196) ───────────────────
-  "Offensive Neutral Zone": { x:150, y:118, w:340, h:52 },
-  // ── Point zones — just below blue line (y=196) ───────────────────────
-  "L Point":                { x:52,  y:202, w:122, h:44 },
-  "Center Point":           { x:188, y:202, w:264, h:44 },
-  "R Point":                { x:466, y:202, w:122, h:44 },
-  // ── Outside lanes ────────────────────────────────────────────────────
-  "Outside L":              { x:12,  y:252, w:66,  h:68 },
-  "Outside R":              { x:562, y:252, w:66,  h:68 },
-  // ── Faceoff circles (SVG circles centered at cy=300) ─────────────────
-  "L Circle":               { x:86,  y:256, w:132, h:62 },
-  "R Circle":               { x:422, y:256, w:132, h:62 },
-  // ── Slot ─────────────────────────────────────────────────────────────
-  "High Slot":              { x:224, y:250, w:192, h:60 },
-  "Low Slot":               { x:224, y:308, w:192, h:52 },
-  // ── Net sides ────────────────────────────────────────────────────────
-  "L Net Side":             { x:86,  y:316, w:132, h:52 },
-  "R Net Side":             { x:422, y:316, w:132, h:52 },
-  // ── Goal area (goal line y=380) ───────────────────────────────────────
-  "L Corner":               { x:12,  y:336, w:70,  h:56 },
-  "R Corner":               { x:558, y:336, w:70,  h:56 },
-  "Crease":                 { x:266, y:356, w:108, h:26 },
-  "Behind the Net":         { x:210, y:388, w:220, h:32 },
+  // ── Above red line ────────────────────────────────────────────────────
+  "Beyond Red Line":        { x:130, y:14,  w:380, h:40  },
+  // ── Between red line (y=110) and blue line (y=196) ────────────────────
+  "Offensive Neutral Zone": { x:130, y:114, w:380, h:82  },
+  // ── Points row: full width just below blue line ───────────────────────
+  "L Point":                { x:12,  y:200, w:118, h:50  },
+  "Center Point":           { x:134, y:200, w:372, h:50  },
+  "R Point":                { x:510, y:200, w:118, h:50  },
+  // ── Outside lanes: span both circle and net-side bands ───────────────
+  "Outside L":              { x:12,  y:254, w:64,  h:114 },
+  "Outside R":              { x:564, y:254, w:64,  h:114 },
+  // ── Upper band: circles + high slot ──────────────────────────────────
+  "L Circle":               { x:80,  y:254, w:136, h:64  },
+  "High Slot":              { x:220, y:254, w:200, h:64  },
+  "R Circle":               { x:424, y:254, w:136, h:64  },
+  // ── Lower band: net sides + low slot ─────────────────────────────────
+  "L Net Side":             { x:80,  y:322, w:136, h:46  },
+  "Low Slot":               { x:220, y:322, w:200, h:46  },
+  "R Net Side":             { x:424, y:322, w:136, h:46  },
+  // ── Goal row: corners + crease filling full width ─────────────────────
+  "L Corner":               { x:12,  y:372, w:78,  h:24  },
+  "Crease":                 { x:94,  y:372, w:452, h:24  },
+  "R Corner":               { x:550, y:372, w:78,  h:24  },
+  // ── Behind net: full width below goal row ─────────────────────────────
+  "Behind the Net":         { x:12,  y:400, w:616, h:28  },
 };
 
 function rankColor(r, total) {
@@ -594,9 +594,6 @@ export default function NHLShotMap() {
                 <path d="M 272 380 A 48 36 0 0 1 368 380 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
                 {/* Goal crease arc */}
                 <path d="M 272 380 A 48 36 0 0 1 368 380" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
-                {/* Goal posts */}
-                <rect x="293" y="398" width="54" height="15" rx="1.5" fill="none" stroke="#2A2A50" strokeWidth="2" clipPath="url(#rink-clip)"/>
-
                 {/* Offensive zone faceoff circles with hash marks */}
                 {[168, 472].map(cx => (
                   <g key={cx} clipPath="url(#rink-clip)">
