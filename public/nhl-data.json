@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-02-25T08:38:37.320Z",
+  "fetchedAt": "2026-02-26T08:36:33.689Z",
   "teams": [
     {
       "id": 1,
@@ -25434,7 +25434,7 @@
         "name": "Meier",
         "firstName": "Timo",
         "playerId": 8478414,
-        "val": 176
+        "val": 182
       },
       "goals": {
         "name": "Hischier",
@@ -25446,7 +25446,7 @@
         "name": "Glass",
         "firstName": "Cody",
         "playerId": 8479996,
-        "val": 16.9
+        "val": 16.7
       }
     },
     "2_20252026_2": {
@@ -25494,7 +25494,7 @@
         "name": "Tippett",
         "firstName": "Owen",
         "playerId": 8480015,
-        "val": 147
+        "val": 149
       },
       "goals": {
         "name": "Konecny",
@@ -25503,10 +25503,10 @@
         "val": 22
       },
       "pctg": {
-        "name": "Grundstrom",
-        "firstName": "Carl",
-        "playerId": 8479336,
-        "val": 25.8
+        "name": "Foerster",
+        "firstName": "Tyson",
+        "playerId": 8482159,
+        "val": 24.4
       }
     },
     "5_20252026_2": {
@@ -25554,19 +25554,19 @@
         "name": "Thompson",
         "firstName": "Tage",
         "playerId": 8479420,
-        "val": 204
+        "val": 207
       },
       "goals": {
         "name": "Thompson",
         "firstName": "Tage",
         "playerId": 8479420,
-        "val": 30
+        "val": 31
       },
       "pctg": {
         "name": "Ostlund",
         "firstName": "Noah",
         "playerId": 8483500,
-        "val": 23.3
+        "val": 22.2
       }
     },
     "8_20252026_2": {
@@ -25614,7 +25614,7 @@
         "name": "Matthews",
         "firstName": "Auston",
         "playerId": 8479318,
-        "val": 193
+        "val": 195
       },
       "goals": {
         "name": "Matthews",
@@ -25626,7 +25626,7 @@
         "name": "Nylander",
         "firstName": "William",
         "playerId": 8477939,
-        "val": 20.9
+        "val": 20
       }
     },
     "12_20252026_2": {
@@ -25674,19 +25674,19 @@
         "name": "Kucherov",
         "firstName": "Nikita",
         "playerId": 8476453,
-        "val": 156
+        "val": 158
       },
       "goals": {
         "name": "Kucherov",
         "firstName": "Nikita",
         "playerId": 8476453,
-        "val": 29
+        "val": 30
       },
       "pctg": {
         "name": "Kucherov",
         "firstName": "Nikita",
         "playerId": 8476453,
-        "val": 18.6
+        "val": 19
       }
     },
     "15_20252026_2": {
@@ -25694,7 +25694,7 @@
         "name": "Chychrun",
         "firstName": "Jakob",
         "playerId": 8479345,
-        "val": 182
+        "val": 183
       },
       "goals": {
         "name": "Wilson",
@@ -25826,7 +25826,7 @@
         "name": "Nelson",
         "firstName": "Brock",
         "playerId": 8475754,
-        "val": 23.2
+        "val": 23.3
       }
     },
     "22_20252026_2": {
@@ -25834,7 +25834,7 @@
         "name": "McDavid",
         "firstName": "Connor",
         "playerId": 8478402,
-        "val": 220
+        "val": 222
       },
       "goals": {
         "name": "McDavid",
@@ -25846,7 +25846,7 @@
         "name": "Hyman",
         "firstName": "Zach",
         "playerId": 8475786,
-        "val": 18.5
+        "val": 18.9
       }
     },
     "23_20252026_2": {
@@ -25854,19 +25854,19 @@
         "name": "DeBrusk",
         "firstName": "Jake",
         "playerId": 8478498,
-        "val": 156
+        "val": 157
       },
       "goals": {
-        "name": "DeBrusk",
-        "firstName": "Jake",
-        "playerId": 8478498,
-        "val": 13
+        "name": "O'Connor",
+        "firstName": "Drew",
+        "playerId": 8482055,
+        "val": 14
       },
       "pctg": {
-        "name": "Sasson",
-        "firstName": "Max",
-        "playerId": 8484136,
-        "val": 20.8
+        "name": "Blueger",
+        "firstName": "Teddy",
+        "playerId": 8476927,
+        "val": 23.8
       }
     },
     "24_20252026_2": {
@@ -25874,19 +25874,19 @@
         "name": "Gauthier",
         "firstName": "Cutter",
         "playerId": 8483445,
-        "val": 208
+        "val": 211
       },
       "goals": {
         "name": "Gauthier",
         "firstName": "Cutter",
         "playerId": 8483445,
-        "val": 25
+        "val": 26
       },
       "pctg": {
         "name": "Kreider",
         "firstName": "Chris",
         "playerId": 8475184,
-        "val": 19.8
+        "val": 19.6
       }
     },
     "25_20252026_2": {
@@ -25894,7 +25894,7 @@
         "name": "Robertson",
         "firstName": "Jason",
         "playerId": 8480027,
-        "val": 205
+        "val": 208
       },
       "goals": {
         "name": "Robertson",
@@ -25914,13 +25914,13 @@
         "name": "Panarin",
         "firstName": "Artemi",
         "playerId": 8478550,
-        "val": 158
+        "val": 161
       },
       "goals": {
         "name": "Kempe",
         "firstName": "Adrian",
         "playerId": 8477960,
-        "val": 20
+        "val": 21
       },
       "pctg": {
         "name": "Kuzmenko",
@@ -25994,7 +25994,7 @@
         "name": "Connor",
         "firstName": "Kyle",
         "playerId": 8478398,
-        "val": 185
+        "val": 189
       },
       "goals": {
         "name": "Scheifele",
@@ -26006,7 +26006,7 @@
         "name": "Scheifele",
         "firstName": "Mark",
         "playerId": 8476460,
-        "val": 23.3
+        "val": 22.7
       }
     },
     "54_20252026_2": {
@@ -26020,7 +26020,7 @@
         "name": "Dorofeyev",
         "firstName": "Pavel",
         "playerId": 8481604,
-        "val": 26
+        "val": 28
       },
       "pctg": {
         "name": "Stone",
@@ -26034,7 +26034,7 @@
         "name": "Eberle",
         "firstName": "Jordan",
         "playerId": 8474586,
-        "val": 119
+        "val": 122
       },
       "goals": {
         "name": "Eberle",
@@ -26046,7 +26046,7 @@
         "name": "McCann",
         "firstName": "Jared",
         "playerId": 8477955,
-        "val": 20.3
+        "val": 20
       }
     },
     "59_20252026_2": {
@@ -26054,19 +26054,19 @@
         "name": "Guenther",
         "firstName": "Dylan",
         "playerId": 8482699,
-        "val": 178
+        "val": 181
       },
       "goals": {
         "name": "Guenther",
         "firstName": "Dylan",
         "playerId": 8482699,
-        "val": 25
+        "val": 27
       },
       "pctg": {
         "name": "Yamamoto",
         "firstName": "Kailer",
         "playerId": 8479977,
-        "val": 27.3
+        "val": 26.5
       }
     },
     "1_20242025_2": {
