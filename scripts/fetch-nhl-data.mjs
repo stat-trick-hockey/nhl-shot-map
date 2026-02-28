@@ -3,7 +3,7 @@
  * Fetches shot location data + skater stat leaders for all NHL teams.
  * Run: node scripts/fetch-nhl-data.mjs
  */
-import { writeFileSync, mkdirSync } from 'fs'
+import { writeFileSync, readFileSync, mkdirSync, existsSync } from 'fs'
 import { join, dirname } from 'path'
 import { fileURLToPath } from 'url'
 const __dirname = dirname(fileURLToPath(import.meta.url))
@@ -44,7 +44,9 @@ const TEAMS = [
 ]
 const SEASONS    = ["20252026", "20242025"]
 const GAME_TYPES = [2, 3]
+const MAX_HISTORY_DAYS = 90
 const SHOT_URL   = "https://api-web.nhle.com/v1/edge/team-shot-location-detail"
+const MAX_HISTORY_DAYS = 90
 const STATS_URL  = "https://api-web.nhle.com/v1/club-stats"
 
 async function get(url) {
@@ -101,13 +103,68 @@ function extractLeaders(data) {
   }
 }
 
+
+function buildSnapshot(date, seasonKey, shotData) {
+  const TEAMS_LOCAL = JSON.parse(readFileSync('public/nhl-data.json','utf8')).teams
+  const rankBy = (getter) => {
+    const vals = []
+    for (const team of TEAMS_LOCAL) {
+      const d = shotData[`${team.id}_${seasonKey}_2`]
+      if (!d) continue
+      const v = getter(d)
+      if (v != null) vals.push({ id: team.id, val: v })
+    }
+    const sorted = [...vals].sort((a, b) => b.val - a.val)
+    const ranks = {}
+    sorted.forEach((item, i) => { ranks[item.id] = i + 1 })
+    return ranks
+  }
+  const allAreas = new Set()
+  for (const team of TEAMS_LOCAL) {
+    const d = shotData[`${team.id}_${seasonKey}_2`]
+    d?.shotLocationDetails?.forEach(z => allAreas.add(z.area))
+  }
+  if (!allAreas.size) return null
+  const get = (pos, field) => rankBy(d => d.shotLocationTotals?.find(t => t.locationCode==='all' && t.position===pos)?.[field])
+  const fwdSog=get('F','sog'), defSog=get('D','sog'), fwdGoal=get('F','goals'), defGoal=get('D','goals'), fwdPctg=get('F','shootingPctg'), defPctg=get('D','shootingPctg')
+  const zoneRanks={}, zoneGoalRanks={}, zonePctgRanks={}
+  for (const area of allAreas) {
+    zoneRanks[area]     = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.sog)
+    zoneGoalRanks[area] = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.goals)
+    zonePctgRanks[area] = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.shootingPctg)
+  }
+  const byTeam = {}
+  for (const team of TEAMS_LOCAL) {
+    const d = shotData[`${team.id}_${seasonKey}_2`]
+    if (!d) continue
+    const zr={}, zgr={}, zpr={}
+    for (const area of allAreas) {
+      if (zoneRanks[area]?.[team.id] != null) zr[area] = zoneRanks[area][team.id]
+      if (zoneGoalRanks[area]?.[team.id] != null) zgr[area] = zoneGoalRanks[area][team.id]
+      if (zonePctgRanks[area]?.[team.id] != null) zpr[area] = zonePctgRanks[area][team.id]
+    }
+    byTeam[team.id] = {
+      fwdSogRank: fwdSog[team.id]??null, defSogRank: defSog[team.id]??null,
+      fwdGoalRank: fwdGoal[team.id]??null, defGoalRank: defGoal[team.id]??null,
+      fwdPctgRank: fwdPctg[team.id]??null, defPctgRank: defPctg[team.id]??null,
+      zoneRanks: zr, zoneGoalRanks: zgr, zonePctgRanks: zpr
+    }
+  }
+  return { date, teams: byTeam }
+}
+
 async function main() {
   console.log('🏒 NHL Shot Location + Skater Leaders Fetcher')
   console.log(`   ${TEAMS.length} teams × ${SEASONS.length} seasons × ${GAME_TYPES.length} game types\n`)
 
+  let existing = null
+  if (existsSync(join(__dirname, '..', 'public', 'nhl-data.json'))) {
+    try { existing = JSON.parse(readFileSync(join(__dirname, '..', 'public', 'nhl-data.json'), 'utf8')) } catch {}
+  }
   const output = {
     fetchedAt: new Date().toISOString(),
     teams: TEAMS, data: {}, leaders: {}, missingKeys: [],
+    history: existing?.history ?? [],
   }
   let success = 0, missing = 0, leadersFound = 0
 
@@ -140,6 +197,70 @@ async function main() {
 
   const outDir = join(__dirname, '..', 'public')
   mkdirSync(outDir, { recursive: true })
+
+  // ── Daily snapshot ──────────────────────────────────────────────────
+  const nowET = new Date(new Date().toLocaleString('en-US', { timeZone: 'America/New_York' }))
+  const today = `${nowET.getFullYear()}-${String(nowET.getMonth()+1).padStart(2,'0')}-${String(nowET.getDate()).padStart(2,'0')}`
+  if (!output.history.some(h => h.date === today)) {
+    console.log(`\n📈 Building snapshot for ${today}...`)
+    const snapData = Object.keys(output.data).length > 0 ? output.data : (existing?.data ?? {})
+    const allAreas = new Set()
+    const TEAMS_SNAP = output.teams
+    for (const team of TEAMS_SNAP) {
+      const d = snapData[`${team.id}_${SEASONS[0]}_2`]
+      d?.shotLocationDetails?.forEach(z => allAreas.add(z.area))
+    }
+    if (allAreas.size > 0) {
+      const rankBy = (getter) => {
+        const vals = []
+        for (const team of TEAMS_SNAP) {
+          const d = snapData[`${team.id}_${SEASONS[0]}_2`]
+          if (!d) continue
+          const v = getter(d)
+          if (v != null) vals.push({ id: team.id, val: v })
+        }
+        const sorted = [...vals].sort((a, b) => b.val - a.val)
+        const ranks = {}
+        sorted.forEach((x, i) => { ranks[x.id] = i + 1 })
+        return ranks
+      }
+      const get = (pos, field) => rankBy(d => d.shotLocationTotals?.find(t => t.locationCode==='all' && t.position===pos)?.[field])
+      const fwdSog=get('F','sog'), defSog=get('D','sog')
+      const fwdGoal=get('F','goals'), defGoal=get('D','goals')
+      const fwdPctg=get('F','shootingPctg'), defPctg=get('D','shootingPctg')
+      const zoneRanks={}, zoneGoalRanks={}, zonePctgRanks={}
+      for (const area of allAreas) {
+        zoneRanks[area]     = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.sog)
+        zoneGoalRanks[area] = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.goals)
+        zonePctgRanks[area] = rankBy(d => d.shotLocationDetails?.find(z=>z.area===area)?.shootingPctg)
+      }
+      const byTeam = {}
+      for (const team of TEAMS_SNAP) {
+        const d = snapData[`${team.id}_${SEASONS[0]}_2`]
+        if (!d) continue
+        const zr={}, zgr={}, zpr={}
+        for (const area of allAreas) {
+          if (zoneRanks[area]?.[team.id] != null) zr[area] = zoneRanks[area][team.id]
+          if (zoneGoalRanks[area]?.[team.id] != null) zgr[area] = zoneGoalRanks[area][team.id]
+          if (zonePctgRanks[area]?.[team.id] != null) zpr[area] = zonePctgRanks[area][team.id]
+        }
+        byTeam[team.id] = {
+          fwdSogRank: fwdSog[team.id]??null, defSogRank: defSog[team.id]??null,
+          fwdGoalRank: fwdGoal[team.id]??null, defGoalRank: defGoal[team.id]??null,
+          fwdPctgRank: fwdPctg[team.id]??null, defPctgRank: defPctg[team.id]??null,
+          zoneRanks: zr, zoneGoalRanks: zgr, zonePctgRanks: zpr
+        }
+      }
+      output.history.push({ date: today, teams: byTeam })
+      if (output.history.length > MAX_HISTORY_DAYS) output.history = output.history.slice(-MAX_HISTORY_DAYS)
+      console.log(`   ✓ Added snapshot (${output.history.length} total days, ${Object.keys(byTeam).length} teams)`)
+    } else {
+      console.log('   ✗ No shot data available')
+    }
+  } else {
+    console.log(`\n📈 Snapshot for ${today} already exists`)
+  }
+
   writeFileSync(join(outDir, 'nhl-data.json'), JSON.stringify(output, null, 2))
   console.log(`\n✅ Done! ${success} shot datasets · ${leadersFound} with leaders · ${missing} missing`)
   console.log(`   → public/nhl-data.json`)
