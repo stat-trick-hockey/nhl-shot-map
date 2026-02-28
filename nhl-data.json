@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-02-28T03:09:10.875Z",
+  "fetchedAt": "2026-02-28T03:18:08.976Z",
   "teams": [
     {
       "id": 1,
@@ -25554,7 +25554,7 @@
         "name": "Thompson",
         "firstName": "Tage",
         "playerId": 8479420,
-        "val": 207
+        "val": 208
       },
       "goals": {
         "name": "Thompson",
@@ -25566,7 +25566,7 @@
         "name": "Ostlund",
         "firstName": "Noah",
         "playerId": 8483500,
-        "val": 22.2
+        "val": 20.8
       }
     },
     "8_20252026_2": {
@@ -25654,7 +25654,7 @@
         "name": "Reinhart",
         "firstName": "Sam",
         "playerId": 8477933,
-        "val": 150
+        "val": 152
       },
       "goals": {
         "name": "Marchand",
@@ -25666,7 +25666,7 @@
         "name": "Marchand",
         "firstName": "Brad",
         "playerId": 8473419,
-        "val": 20.8
+        "val": 20.1
       }
     },
     "14_20252026_2": {
