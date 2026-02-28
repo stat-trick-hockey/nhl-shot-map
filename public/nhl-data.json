@@ -27082,11 +27082,15 @@
   ],
   "history": [
     {
-      "date": "2026-02-27",
+      "date": "2026-02-28",
       "teams": {
         "1": {
           "fwdSogRank": 7,
           "defSogRank": 8,
+          "fwdGoalRank": 32,
+          "defGoalRank": 20,
+          "fwdPctgRank": 32,
+          "defPctgRank": 26,
           "zoneRanks": {
             "Behind the Net": 7,
             "Beyond Red Line": 21,
@@ -27148,6 +27152,10 @@
         "2": {
           "fwdSogRank": 23,
           "defSogRank": 6,
+          "fwdGoalRank": 22,
+          "defGoalRank": 10,
+          "fwdPctgRank": 23,
+          "defPctgRank": 14,
           "zoneRanks": {
             "Behind the Net": 10,
             "Beyond Red Line": 14,
@@ -27209,6 +27217,10 @@
         "3": {
           "fwdSogRank": 28,
           "defSogRank": 25,
+          "fwdGoalRank": 30,
+          "defGoalRank": 16,
+          "fwdPctgRank": 27,
+          "defPctgRank": 15,
           "zoneRanks": {
             "Behind the Net": 28,
             "Beyond Red Line": 5,
@@ -27270,6 +27282,10 @@
         "4": {
           "fwdSogRank": 24,
           "defSogRank": 31,
+          "fwdGoalRank": 20,
+          "defGoalRank": 27,
+          "fwdPctgRank": 16,
+          "defPctgRank": 21,
           "zoneRanks": {
             "Behind the Net": 12,
             "Beyond Red Line": 7,
@@ -27331,6 +27347,10 @@
         "5": {
           "fwdSogRank": 6,
           "defSogRank": 21,
+          "fwdGoalRank": 2,
+          "defGoalRank": 28,
+          "fwdPctgRank": 6,
+          "defPctgRank": 29,
           "zoneRanks": {
             "Behind the Net": 2,
             "Beyond Red Line": 10,
@@ -27392,6 +27412,10 @@
         "6": {
           "fwdSogRank": 18,
           "defSogRank": 27,
+          "fwdGoalRank": 3,
+          "defGoalRank": 22,
+          "fwdPctgRank": 2,
+          "defPctgRank": 19,
           "zoneRanks": {
             "Behind the Net": 13,
             "Beyond Red Line": 1,
@@ -27453,6 +27477,10 @@
         "7": {
           "fwdSogRank": 22,
           "defSogRank": 9,
+          "fwdGoalRank": 15,
+          "defGoalRank": 3,
+          "fwdPctgRank": 9,
+          "defPctgRank": 2,
           "zoneRanks": {
             "Behind the Net": 11,
             "Beyond Red Line": 19,
@@ -27514,6 +27542,10 @@
         "8": {
           "fwdSogRank": 25,
           "defSogRank": 23,
+          "fwdGoalRank": 11,
+          "defGoalRank": 6,
+          "fwdPctgRank": 3,
+          "defPctgRank": 1,
           "zoneRanks": {
             "Behind the Net": 6,
             "Beyond Red Line": 12,
@@ -27575,6 +27607,10 @@
         "9": {
           "fwdSogRank": 13,
           "defSogRank": 12,
+          "fwdGoalRank": 12,
+          "defGoalRank": 12,
+          "fwdPctgRank": 14,
+          "defPctgRank": 12,
           "zoneRanks": {
             "Behind the Net": 18,
             "Beyond Red Line": 30,
@@ -27636,6 +27672,10 @@
         "10": {
           "fwdSogRank": 15,
           "defSogRank": 20,
+          "fwdGoalRank": 8,
+          "defGoalRank": 23,
+          "fwdPctgRank": 7,
+          "defPctgRank": 22,
           "zoneRanks": {
             "Behind the Net": 32,
             "Beyond Red Line": 4,
@@ -27697,6 +27737,10 @@
         "12": {
           "fwdSogRank": 3,
           "defSogRank": 2,
+          "fwdGoalRank": 6,
+          "defGoalRank": 13,
+          "fwdPctgRank": 11,
+          "defPctgRank": 27,
           "zoneRanks": {
             "Behind the Net": 19,
             "Beyond Red Line": 23,
@@ -27758,6 +27802,10 @@
         "13": {
           "fwdSogRank": 2,
           "defSogRank": 26,
+          "fwdGoalRank": 14,
+          "defGoalRank": 29,
+          "fwdPctgRank": 24,
+          "defPctgRank": 28,
           "zoneRanks": {
             "Behind the Net": 15,
             "Beyond Red Line": 27,
@@ -27819,6 +27867,10 @@
         "14": {
           "fwdSogRank": 21,
           "defSogRank": 10,
+          "fwdGoalRank": 7,
+          "defGoalRank": 7,
+          "fwdPctgRank": 4,
+          "defPctgRank": 6,
           "zoneRanks": {
             "Behind the Net": 20,
             "Beyond Red Line": 28,
@@ -27880,6 +27932,10 @@
         "15": {
           "fwdSogRank": 14,
           "defSogRank": 4,
+          "fwdGoalRank": 17,
+          "defGoalRank": 2,
+          "fwdPctgRank": 21,
+          "defPctgRank": 4,
           "zoneRanks": {
             "Behind the Net": 21,
             "Beyond Red Line": 2,
@@ -27941,6 +27997,10 @@
         "16": {
           "fwdSogRank": 32,
           "defSogRank": 18,
+          "fwdGoalRank": 24,
+          "defGoalRank": 30,
+          "fwdPctgRank": 10,
+          "defPctgRank": 31,
           "zoneRanks": {
             "Behind the Net": 31,
             "Beyond Red Line": 15,
@@ -28002,6 +28062,10 @@
         "17": {
           "fwdSogRank": 5,
           "defSogRank": 22,
+          "fwdGoalRank": 18,
+          "defGoalRank": 17,
+          "fwdPctgRank": 26,
+          "defPctgRank": 17,
           "zoneRanks": {
             "Behind the Net": 14,
             "Beyond Red Line": 32,
@@ -28063,6 +28127,10 @@
         "18": {
           "fwdSogRank": 16,
           "defSogRank": 11,
+          "fwdGoalRank": 21,
+          "defGoalRank": 18,
+          "fwdPctgRank": 25,
+          "defPctgRank": 20,
           "zoneRanks": {
             "Behind the Net": 22,
             "Beyond Red Line": 18,
@@ -28124,6 +28192,10 @@
         "19": {
           "fwdSogRank": 31,
           "defSogRank": 15,
+          "fwdGoalRank": 28,
+          "defGoalRank": 24,
+          "fwdPctgRank": 20,
+          "defPctgRank": 25,
           "zoneRanks": {
             "Behind the Net": 23,
             "Beyond Red Line": 20,
@@ -28185,6 +28257,10 @@
         "20": {
           "fwdSogRank": 12,
           "defSogRank": 17,
+          "fwdGoalRank": 31,
+          "defGoalRank": 25,
+          "fwdPctgRank": 31,
+          "defPctgRank": 24,
           "zoneRanks": {
             "Behind the Net": 30,
             "Beyond Red Line": 8,
@@ -28246,6 +28322,10 @@
         "21": {
           "fwdSogRank": 1,
           "defSogRank": 1,
+          "fwdGoalRank": 1,
+          "defGoalRank": 5,
+          "fwdPctgRank": 12,
+          "defPctgRank": 16,
           "zoneRanks": {
             "Behind the Net": 24,
             "Beyond Red Line": 11,
@@ -28307,6 +28387,10 @@
         "22": {
           "fwdSogRank": 8,
           "defSogRank": 3,
+          "fwdGoalRank": 5,
+          "defGoalRank": 4,
+          "fwdPctgRank": 8,
+          "defPctgRank": 8,
           "zoneRanks": {
             "Behind the Net": 3,
             "Beyond Red Line": 26,
@@ -28368,6 +28452,10 @@
         "23": {
           "fwdSogRank": 19,
           "defSogRank": 30,
+          "fwdGoalRank": 29,
+          "defGoalRank": 31,
+          "fwdPctgRank": 30,
+          "defPctgRank": 30,
           "zoneRanks": {
             "Behind the Net": 4,
             "Beyond Red Line": 25,
@@ -28429,6 +28517,10 @@
         "24": {
           "fwdSogRank": 10,
           "defSogRank": 7,
+          "fwdGoalRank": 16,
+          "defGoalRank": 8,
+          "fwdPctgRank": 22,
+          "defPctgRank": 7,
           "zoneRanks": {
             "Behind the Net": 17,
             "Beyond Red Line": 24,
@@ -28490,6 +28582,10 @@
         "25": {
           "fwdSogRank": 27,
           "defSogRank": 28,
+          "fwdGoalRank": 10,
+          "defGoalRank": 14,
+          "fwdPctgRank": 1,
+          "defPctgRank": 9,
           "zoneRanks": {
             "Behind the Net": 29,
             "Beyond Red Line": 16,
@@ -28551,6 +28647,10 @@
         "26": {
           "fwdSogRank": 17,
           "defSogRank": 24,
+          "fwdGoalRank": 26,
+          "defGoalRank": 32,
+          "fwdPctgRank": 29,
+          "defPctgRank": 32,
           "zoneRanks": {
             "Behind the Net": 5,
             "Beyond Red Line": 13,
@@ -28612,6 +28712,10 @@
         "28": {
           "fwdSogRank": 26,
           "defSogRank": 32,
+          "fwdGoalRank": 19,
+          "defGoalRank": 26,
+          "fwdPctgRank": 13,
+          "defPctgRank": 13,
           "zoneRanks": {
             "Behind the Net": 25,
             "Beyond Red Line": 29,
@@ -28673,6 +28777,10 @@
         "29": {
           "fwdSogRank": 20,
           "defSogRank": 5,
+          "fwdGoalRank": 25,
+          "defGoalRank": 1,
+          "fwdPctgRank": 28,
+          "defPctgRank": 3,
           "zoneRanks": {
             "Behind the Net": 8,
             "Beyond Red Line": 22,
@@ -28734,6 +28842,10 @@
         "30": {
           "fwdSogRank": 4,
           "defSogRank": 13,
+          "fwdGoalRank": 9,
+          "defGoalRank": 11,
+          "fwdPctgRank": 15,
+          "defPctgRank": 10,
           "zoneRanks": {
             "Behind the Net": 1,
             "Beyond Red Line": 9,
@@ -28795,6 +28907,10 @@
         "52": {
           "fwdSogRank": 29,
           "defSogRank": 19,
+          "fwdGoalRank": 23,
+          "defGoalRank": 19,
+          "fwdPctgRank": 18,
+          "defPctgRank": 18,
           "zoneRanks": {
             "Behind the Net": 9,
             "Beyond Red Line": 17,
@@ -28856,6 +28972,10 @@
         "54": {
           "fwdSogRank": 9,
           "defSogRank": 14,
+          "fwdGoalRank": 4,
+          "defGoalRank": 21,
+          "fwdPctgRank": 5,
+          "defPctgRank": 23,
           "zoneRanks": {
             "Behind the Net": 26,
             "Beyond Red Line": 6,
@@ -28917,6 +29037,10 @@
         "55": {
           "fwdSogRank": 30,
           "defSogRank": 16,
+          "fwdGoalRank": 27,
+          "defGoalRank": 9,
+          "fwdPctgRank": 19,
+          "defPctgRank": 5,
           "zoneRanks": {
             "Behind the Net": 27,
             "Beyond Red Line": 31,
@@ -28978,6 +29102,10 @@
         "59": {
           "fwdSogRank": 11,
           "defSogRank": 29,
+          "fwdGoalRank": 13,
+          "defGoalRank": 15,
+          "fwdPctgRank": 17,
+          "defPctgRank": 11,
           "zoneRanks": {
             "Behind the Net": 16,
             "Beyond Red Line": 3,

@@ -379,6 +379,7 @@ export default function NHLShotMap() {
   const [hovered, setHovered] = useState(null);
   const [view, setView]       = useState("heatmap");
   const [metric, setMetric]   = useState("sog");
+  const [trendMetric, setTrendMetric] = useState(null); // null=hidden, "sog"|"goals"|"pctg"
 
   useEffect(() => {
     fetch(`${import.meta.env.BASE_URL}nhl-data.json`)
@@ -479,6 +480,13 @@ export default function NHLShotMap() {
         tr:hover td{background:#10101C}
         .foot{padding:10px 20px;display:flex;justify-content:space-between;align-items:center;border-top:1px solid #181828;background:#08080F}
         .fl{font-size:8px;letter-spacing:2px;color:#252535}
+        .spk{border-top:1px solid #181828;padding:14px 14px 10px}
+        .zspk{display:inline-block;vertical-align:middle;opacity:0.7}
+        .spk-lbl{font-size:8px;letter-spacing:3px;color:#383848;margin-bottom:10px}
+        .spk-row{display:flex;align-items:center;gap:10px;margin-bottom:4px}
+        .spk-tag{font-size:8px;letter-spacing:1px;color:#484858;width:14px;flex-shrink:0}
+        .spk-wrap{flex:1;height:28px;position:relative}
+        .spk-info{font-size:8px;color:#484858;width:24px;text-align:right;flex-shrink:0}
         .no-data{padding:60px 20px;text-align:center;color:#333;font-size:10px;letter-spacing:3px}
         .err{padding:40px 20px;text-align:center;color:#F87171;font-size:10px;letter-spacing:2px;line-height:1.8}
       `}</style>
@@ -525,6 +533,17 @@ export default function NHLShotMap() {
             <button className={`tbtn ${view==="heatmap"?"on":""}`} onClick={()=>setView("heatmap")}>MAP</button>
             <button className={`tbtn ${view==="table"?"on":""}`} onClick={()=>setView("table")}>TABLE</button>
           </div>
+          {view === "table" && (
+            <div className="tog">
+              {[["sog","SOG"],["goals","GOALS"],["pctg","SH%"]].map(([k,l]) => (
+                <button key={k}
+                  className={`tbtn ${trendMetric===k?"on":""}`}
+                  onClick={() => setTrendMetric(prev => prev === k ? null : k)}
+                  title={trendMetric===k?"Hide trend":"Show trend"}
+                >{l}</button>
+              ))}
+            </div>
+          )}
         </div>
 
         {/* Error state */}
@@ -667,28 +686,74 @@ export default function NHLShotMap() {
         )}
 
         {/* Table view */}
-        {data && view === "table" && (
-          <div className="tw">
-            <table>
-              <thead>
-                <tr><th>ZONE</th><th>SOG</th><th>RK</th><th>GOALS</th><th>RK</th><th>SH%</th><th>RK</th></tr>
-              </thead>
-              <tbody>
-                {[...details].sort((a,b) => b.sog - a.sog).map(z => (
-                  <tr key={z.area}>
-                    <td>{z.area}</td>
-                    <td>{z.sog}</td>
-                    <td style={{color:rankColor(z.sogRank, rankTotal)}}>#{z.sogRank}</td>
-                    <td>{z.goals}</td>
-                    <td style={{color:rankColor(z.goalsRank, rankTotal)}}>#{z.goalsRank}</td>
-                    <td>{(z.shootingPctg*100).toFixed(1)}%</td>
-                    <td style={{color:rankColor(z.shootingPctgRank, rankTotal)}}>#{z.shootingPctgRank}</td>
+        {data && view === "table" && (() => {
+          // Build per-zone rank history from accumulated snapshots
+          const history = db?.history ?? [];
+          const zoneKey = trendMetric === "goals" ? "zoneGoalRanks"
+                         : trendMetric === "pctg"  ? "zonePctgRanks"
+                         : "zoneRanks";
+          const zonePts = (area) => history
+            .filter(h => h.teams?.[String(teamId)]?.[zoneKey]?.[area] != null)
+            .map(h => h.teams[String(teamId)][zoneKey][area]);
+
+          const ZoneSparkline = ({ area, color, rankKey }) => {
+            const raw = zonePts(area);
+            if (raw.length < 1) return <span style={{color:"#252535",fontSize:"8px"}}>—</span>;
+            const isFlat = raw.length < 2;
+            const pts = isFlat ? [raw[0], raw[0]] : raw;
+            const W = 52, H = 16, PAD = 1;
+            const minR = Math.min(...pts), maxR = Math.max(...pts);
+            const rng  = Math.max(maxR - minR, 3);
+            const toX  = i => PAD + (i / (pts.length - 1)) * (W - PAD * 2);
+            const toY  = r => PAD + ((r - minR) / rng) * (H - PAD * 2);
+            const pl   = pts.map((r, i) => `${toX(i).toFixed(1)},${toY(r).toFixed(1)}`).join(' ');
+            const lr   = pts[pts.length - 1];
+            return (
+              <svg className="zspk" width={W} height={H} viewBox={`0 0 ${W} ${H}`}>
+                <polyline points={pl} fill="none" stroke={color} strokeWidth="1.5"
+                  strokeLinejoin="round" strokeLinecap="round"
+                  strokeDasharray={isFlat ? "4 3" : "none"}
+                  opacity={isFlat ? 0.4 : 1}/>
+                <circle cx={toX(pts.length-1).toFixed(1)} cy={toY(lr).toFixed(1)}
+                  r="2" fill={color} opacity={isFlat ? 0.4 : 1}/>
+              </svg>
+            );
+          };
+
+          return (
+            <div className="tw">
+              <table>
+                <thead>
+                  <tr>
+                    <th>ZONE</th>
+                    <th>SOG</th><th>RK</th>
+                    <th>GOALS</th><th>RK</th>
+                    <th>SH%</th><th>RK</th>
+                    {trendMetric && <th style={{textAlign:"center"}}>{trendMetric==="sog"?"SOG TREND":trendMetric==="goals"?"GOAL TREND":"SH% TREND"}</th>}
                   </tr>
-                ))}
-              </tbody>
-            </table>
-          </div>
-        )}
+                </thead>
+                <tbody>
+                  {[...details].sort((a,b) => b.sog - a.sog).map(z => (
+                    <tr key={z.area}>
+                      <td>{z.area}</td>
+                      <td>{z.sog}</td>
+                      <td style={{color:rankColor(z.sogRank, rankTotal)}}>#{z.sogRank}</td>
+                      <td>{z.goals}</td>
+                      <td style={{color:rankColor(z.goalsRank, rankTotal)}}>#{z.goalsRank}</td>
+                      <td>{(z.shootingPctg*100).toFixed(1)}%</td>
+                      <td style={{color:rankColor(z.shootingPctgRank, rankTotal)}}>#{z.shootingPctgRank}</td>
+                      {trendMetric && (
+                      <td style={{textAlign:"center",padding:"4px 8px"}}>
+                        <ZoneSparkline area={z.area} color={tc} rankKey={zoneKey}/>
+                      </td>
+                    )}
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            </div>
+          );
+        })()}
 
         {/* Totals */}
         {totals && (() => {
@@ -736,6 +801,105 @@ export default function NHLShotMap() {
             ))}
           </div>
         )}
+
+        {/* Sparkline: rank history */}
+        {(() => {
+          const history = db?.history ?? [];
+          if (history.length < 1) return null;
+          // Filter to snapshots that have data for this team
+          const pts = history
+            .filter(h => h.teams?.[String(teamId)])
+            .slice(-60); // last 60 days max
+          if (pts.length < 1) return null;
+          const isPlaceholder = pts.length < 2;
+
+          const groups = [
+            { metric: 'SOG',   fKey: 'fwdSogRank',  dKey: 'defSogRank'  },
+            { metric: 'GOALS', fKey: 'fwdGoalRank',  dKey: 'defGoalRank'  },
+            { metric: 'SH%',   fKey: 'fwdPctgRank',  dKey: 'defPctgRank'  },
+          ];
+
+          const W = 440, H = 22, PAD = 2;
+          const allKeys = groups.flatMap(g => [g.fKey, g.dKey]);
+          const allRanks = pts.flatMap(p => allKeys.map(k => p.teams[String(teamId)]?.[k]).filter(Boolean));
+          const minR = Math.min(...allRanks);
+          const maxR = Math.max(...allRanks);
+          const rRange = Math.max(maxR - minR, 4); // min spread of 4 ranks
+
+          const toX = i => PAD + (i / (pts.length - 1)) * (W - PAD * 2);
+          // rank 1 = top = low Y; rank 32 = bottom = high Y
+          const toY = r => PAD + ((r - minR) / rRange) * (H - PAD * 2);
+
+          const makeLine = (key) => {
+            const ptsToUse = isPlaceholder ? [pts[0], pts[0]] : pts;
+            return ptsToUse
+              .map((p, i) => {
+                const r = p.teams[String(teamId)]?.[key];
+                if (!r) return null;
+                return `${toX(i).toFixed(1)},${toY(r).toFixed(1)}`;
+              })
+              .filter(Boolean)
+              .join(' ');
+          };
+
+          const lastRank = (key) => {
+            for (let i = pts.length - 1; i >= 0; i--) {
+              const r = pts[i].teams[String(teamId)]?.[key];
+              if (r) return r;
+            }
+            return null;
+          };
+
+          return (
+            <div className="spk">
+              <div className="spk-lbl">SHOT RANK TREND · LAST {pts.length} DAYS</div>
+              {groups.map(({ metric, fKey, dKey }) => {
+                const fPl = makeLine(fKey), dPl = makeLine(dKey);
+                const fLr = lastRank(fKey), dLr = lastRank(dKey);
+                if (!fPl && !dPl) return null;
+                const lastPt = pts[pts.length - 1];
+                const fEndR = lastPt?.teams[String(teamId)]?.[fKey];
+                const dEndR = lastPt?.teams[String(teamId)]?.[dKey];
+                return (
+                  <div key={metric} style={{marginBottom:'8px'}}>
+                    <div style={{fontSize:'7px',letterSpacing:'2px',color:'#2A2A3A',marginBottom:'3px'}}>{metric}</div>
+                    <div className="spk-row">
+                      <span className="spk-tag">F</span>
+                      <div className="spk-wrap">
+                        <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+                          <line x1="0" y1={toY(1).toFixed(1)} x2={W} y2={toY(1).toFixed(1)} stroke={tc} strokeOpacity="0.06" strokeWidth="1"/>
+                          <line x1="0" y1={toY(32).toFixed(1)} x2={W} y2={toY(32).toFixed(1)} stroke={tc} strokeOpacity="0.06" strokeWidth="1"/>
+                          {fPl && <polyline points={fPl} fill="none" stroke={tc} strokeWidth="1.5"
+                            strokeLinejoin="round" strokeLinecap="round"
+                            strokeDasharray={isPlaceholder ? "4 3" : "none"} opacity={isPlaceholder ? 0.4 : 0.85}/>}
+                          {fEndR && <circle cx={toX(isPlaceholder?0:pts.length-1).toFixed(1)} cy={toY(fEndR).toFixed(1)} r="2.5" fill={tc} opacity={isPlaceholder?0.4:1}/>}
+                        </svg>
+                      </div>
+                      <span className="spk-info" style={{color: fLr ? rankColor(fLr, 32) : '#484858'}}>{fLr ? `#${fLr}` : '—'}</span>
+                    </div>
+                    <div className="spk-row" style={{marginBottom:0}}>
+                      <span className="spk-tag">D</span>
+                      <div className="spk-wrap">
+                        <svg width="100%" height="100%" viewBox={`0 0 ${W} ${H}`} preserveAspectRatio="none">
+                          <line x1="0" y1={toY(1).toFixed(1)} x2={W} y2={toY(1).toFixed(1)} stroke={tc} strokeOpacity="0.06" strokeWidth="1"/>
+                          <line x1="0" y1={toY(32).toFixed(1)} x2={W} y2={toY(32).toFixed(1)} stroke={tc} strokeOpacity="0.06" strokeWidth="1"/>
+                          {dPl && <polyline points={dPl} fill="none" stroke={tc+'88'} strokeWidth="1.5"
+                            strokeLinejoin="round" strokeLinecap="round"
+                            strokeDasharray={isPlaceholder ? "4 3" : "none"} opacity={isPlaceholder ? 0.4 : 0.85}/>}
+                          {dEndR && <circle cx={toX(isPlaceholder?0:pts.length-1).toFixed(1)} cy={toY(dEndR).toFixed(1)} r="2.5" fill={tc+'88'} opacity={isPlaceholder?0.4:1}/>}
+                        </svg>
+                      </div>
+                      <span className="spk-info" style={{color: dLr ? rankColor(dLr, 32) : '#484858'}}>{dLr ? `#${dLr}` : '—'}</span>
+                    </div>
+                  </div>
+                );
+              })}
+              <div style={{fontSize:'7px',letterSpacing:'1px',color:'#252535',marginTop:'2px',textAlign:'right'}}>
+                RANK AMONG 32 TEAMS · LOWER = BETTER
+              </div>
+            </div>
+          );
+        })()}
 
         <div className="foot">
           <div className="fl">NHL EDGE API · api-web.nhle.com</div>
