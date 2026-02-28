@@ -46,7 +46,6 @@ const SEASONS    = ["20252026", "20242025"]
 const GAME_TYPES = [2, 3]
 const MAX_HISTORY_DAYS = 90
 const SHOT_URL   = "https://api-web.nhle.com/v1/edge/team-shot-location-detail"
-const MAX_HISTORY_DAYS = 90
 const STATS_URL  = "https://api-web.nhle.com/v1/club-stats"
 
 async function get(url) {
