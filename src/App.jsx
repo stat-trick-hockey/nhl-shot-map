@@ -588,70 +588,7 @@ export default function NHLShotMap() {
               )}
 
               <svg viewBox="0 0 640 460" style={{width:"100%",display:"block"}}>
-                {(() => {
-                  // ── Zone path definitions ────────────────────────────────
-                  // Canvas: 640x460. Rink spans x:10-630, y:10-450
-                  // Blue line: y=190. Red line: y=105. Goal line: y=390
-                  // Crease center: cx=320, cy=390, r=52
-                  // Faceoff circles: cx=168,472 cy=310 r=60
-                  const CX = 320, GL = 390, BL = 190;
-                  const FC_R = 60; // faceoff circle radius
-                  const CR = 52;   // crease radius
-
-                  // Arc path helper: large-arc-flag, sweep
-                  const arc = (x1,y1,rx,ry,x2,y2,large=0,sweep=1) =>
-                    `M ${x1} ${y1} A ${rx} ${ry} 0 ${large} ${sweep} ${x2} ${y2}`;
-
-                  // Rink outline clip — arched top
-                  // Top arc: from (80,10) to (560,10) with arc peaking up
-                  const rinkClip = `M 80 10 Q 320 -20 560 10 L 630 10 L 630 450 Q 630 460 620 460 L 20 460 Q 10 460 10 450 L 10 10 Z`;
-
-                  // Zone paths
-                  const zonePaths = {
-                    "Beyond Red Line":
-                      `M 80 10 Q 320 -20 560 10 L 630 10 L 630 105 L 10 105 L 10 10 Z`,
-                    "Offensive Neutral Zone":
-                      `M 10 105 L 630 105 L 630 190 L 10 190 Z`,
-                    "L Point":
-                      `M 10 190 L 100 190 L 100 240 L 10 240 Z`,
-                    "Center Point":
-                      `M 100 190 L 540 190 L 540 240 L 100 240 Z`,
-                    "R Point":
-                      `M 540 190 L 630 190 L 630 240 L 540 240 Z`,
-                    "Outside L":
-                      `M 10 240 L 80 240 L 80 390 L 10 390 Z`,
-                    "Outside R":
-                      `M 560 240 L 630 240 L 630 390 L 560 390 Z`,
-                    // L Circle: left faceoff circle region (80-240 x, 240-390 y, minus slot wedge)
-                    "L Circle":
-                      `M 80 240 L 230 240 L 230 310 A ${FC_R} ${FC_R} 0 0 1 80 310 Z`,
-                    // High Slot: fan shape between faceoff circles above crease
-                    "High Slot":
-                      `M 230 240 L 410 240 L 410 310 A ${FC_R} ${FC_R} 0 0 0 ${CX+CR} 310 L ${CX-CR} 310 A ${FC_R} ${FC_R} 0 0 0 230 310 Z`,
-                    // R Circle: right faceoff circle region
-                    "R Circle":
-                      `M 410 240 L 560 240 L 560 310 A ${FC_R} ${FC_R} 0 0 0 410 310 Z`,
-                    // L Net Side: left of slot, below circles
-                    "L Net Side":
-                      `M 80 310 A ${FC_R} ${FC_R} 0 0 0 80 310 L 80 390 L ${CX - CR} 390 A ${CR} ${CR} 0 0 1 ${CX - CR} 310 Z`,
-                    // Low Slot: between crease top and circle bottoms
-                    "Low Slot":
-                      `M ${CX - CR} 310 A ${CR} ${CR} 0 0 1 ${CX + CR} 310 L ${CX + CR} 390 A ${CR} ${CR} 0 0 0 ${CX - CR} 390 Z`,
-                    // R Net Side
-                    "R Net Side":
-                      `M ${CX + CR} 310 A ${FC_R} ${FC_R} 0 0 1 560 310 L 560 390 L ${CX + CR} 390 A ${CR} ${CR} 0 0 0 ${CX + CR} 310 Z`,
-                    "L Corner":
-                      `M 10 390 L 80 390 L 80 410 Q 80 450 20 450 L 10 450 Z`,
-                    "Crease":
-                      `M ${CX - CR} 390 A ${CR} ${CR} 0 0 1 ${CX + CR} 390 L ${CX + CR} 450 L ${CX - CR} 450 Z`,
-                    "R Corner":
-                      `M 560 390 L 630 390 L 630 450 L 620 450 Q 560 450 560 410 Z`,
-                    "Behind the Net":
-                      `M 10 450 L 630 450 L 630 390 L 560 390 Q 560 450 ${CX + CR} 450 L ${CX - CR} 450 Q 80 450 80 390 L 10 390 Z`,
-                  };
-
-                  return null; // paths defined above, used below
-                })()}
+                
 
                 <defs>
                   <filter id="gl"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
