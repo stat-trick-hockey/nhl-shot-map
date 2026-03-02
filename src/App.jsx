@@ -810,12 +810,12 @@ export default function NHLShotMap() {
         {/* Sparkline: rank history */}
         {(() => {
           const history = db?.history ?? [];
-          if (history.length < 2) return null;
-          // Filter to snapshots that have data for this team
+          if (history.length < 1) return null;
           const pts = history
             .filter(h => h.teams?.[String(teamId)])
-            .slice(-60); // last 60 days max
-          if (pts.length < 2) return null;
+            .slice(-60);
+          if (pts.length < 1) return null;
+          const isPlaceholder = pts.length < 2;
 
           const groups = [
             { metric: 'SOG',   fKey: 'fwdSogRank',  dKey: 'defSogRank'  },
@@ -841,22 +841,13 @@ export default function NHLShotMap() {
               return `${toX(i).toFixed(1)},${toY(r).toFixed(1)}`;
             }).filter(Boolean).join(' ');
           };
-          const liveRank = (key) => {
-            if (key === 'fwdSogRank')  return fwd?.sogRank ?? null;
-            if (key === 'defSogRank')  return def?.sogRank ?? null;
-            if (key === 'fwdGoalRank') return fwd?.goalsRank ?? null;
-            if (key === 'defGoalRank') return def?.goalsRank ?? null;
-            if (key === 'fwdPctgRank') return fwd?.shootingPctgRank ?? null;
-            if (key === 'defPctgRank') return def?.shootingPctgRank ?? null;
-            return null;
-          };
-          const lastRank = (key) => liveRank(key) ?? (() => {
+          const lastRank = (key) => {
             for (let i = pts.length - 1; i >= 0; i--) {
               const r = pts[i].teams[String(teamId)]?.[key];
               if (r) return r;
             }
             return null;
-          })();
+          };
 
           return (
             <div className="spk">
@@ -866,8 +857,8 @@ export default function NHLShotMap() {
                 const fLr = lastRank(fKey), dLr = lastRank(dKey);
                 if (!fPl && !dPl) return null;
                 const lastPt = pts[pts.length - 1];
-                const fEndR = liveRank(fKey) ?? lastPt?.teams[String(teamId)]?.[fKey];
-                const dEndR = liveRank(dKey) ?? lastPt?.teams[String(teamId)]?.[dKey];
+                const fEndR = lastPt?.teams[String(teamId)]?.[fKey];
+                const dEndR = lastPt?.teams[String(teamId)]?.[dKey];
                 return (
                   <div key={metric} style={{marginBottom:'8px'}}>
                     <div style={{fontSize:'7px',letterSpacing:'2px',color:'#2A2A3A',marginBottom:'3px'}}>{metric}</div>
