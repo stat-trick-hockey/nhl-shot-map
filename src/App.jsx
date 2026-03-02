@@ -21,6 +21,7 @@ const ZONE_POS = {
   "Crease":                 { cx:320, cy:385 },
   "R Corner":               { cx:588, cy:390 },
   "Behind the Net":         { cx:320, cy:435 },
+};
 
 function rankColor(r, total) {
   const pct = r / total;
