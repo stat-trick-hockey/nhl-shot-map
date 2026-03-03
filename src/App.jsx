@@ -2,30 +2,30 @@ import { useState, useEffect } from "react";
 
 const ZONE_POS = {
   // ── Top: fills from boards to red line (y=110) ───────────────────────
-  "Beyond Red Line":        { x:130, y:14,  w:380, h:92  },
+  "Beyond Red Line":        { x:130, y:336, w:380, h:92  },
   // ── Neutral: fills between red (y=110) and blue (y=196) line ─────────
-  "Offensive Neutral Zone": { x:130, y:114, w:380, h:78  },
+  "Offensive Neutral Zone": { x:130, y:250, w:380, h:78  },
   // ── Points row ───────────────────────────────────────────────────────
-  "L Point":                { x:12,  y:200, w:118, h:50  },
-  "Center Point":           { x:134, y:200, w:372, h:50  },
-  "R Point":                { x:510, y:200, w:118, h:50  },
+  "L Point":                { x:12,  y:192, w:118, h:50  },
+  "Center Point":           { x:134, y:192, w:372, h:50  },
+  "R Point":                { x:510, y:192, w:118, h:50  },
   // ── Outside lanes (same width as corners) ────────────────────────────
-  "Outside L":              { x:12,  y:254, w:64,  h:106 },
-  "Outside R":              { x:564, y:254, w:64,  h:106 },
+  "Outside L":              { x:12,  y:82,  w:64,  h:106 },
+  "Outside R":              { x:564, y:82,  w:64,  h:106 },
   // ── Upper band ───────────────────────────────────────────────────────
-  "L Circle":               { x:80,  y:254, w:136, h:64  },
-  "High Slot":              { x:220, y:254, w:200, h:64  },
-  "R Circle":               { x:424, y:254, w:136, h:64  },
+  "L Circle":               { x:80,  y:124, w:136, h:64  },
+  "High Slot":              { x:220, y:124, w:200, h:64  },
+  "R Circle":               { x:424, y:124, w:136, h:64  },
   // ── Lower band: net sides reach goal line ────────────────────────────
-  "L Net Side":             { x:80,  y:322, w:136, h:54  },
-  "Low Slot":               { x:220, y:322, w:200, h:38  },
-  "R Net Side":             { x:424, y:322, w:136, h:54  },
+  "L Net Side":             { x:80,  y:66,  w:136, h:54  },
+  "Low Slot":               { x:220, y:82,  w:200, h:38  },
+  "R Net Side":             { x:424, y:66,  w:136, h:54  },
   // ── Goal row: corners match outside lane width, all end at goal line ──
-  "L Corner":               { x:12,  y:364, w:64,  h:16  },
-  "Crease":                 { x:220, y:364, w:200, h:16  },
-  "R Corner":               { x:564, y:364, w:64,  h:16  },
+  "L Corner":               { x:12,  y:62,  w:64,  h:16  },
+  "Crease":                 { x:220, y:62,  w:200, h:16  },
+  "R Corner":               { x:564, y:62,  w:64,  h:16  },
   // ── Behind net: full width below goal line ────────────────────────────
-  "Behind the Net":         { x:12,  y:384, w:616, h:44  },
+  "Behind the Net":         { x:12,  y:14,  w:616, h:44  },
 };
 
 function rankColor(r, total) {
@@ -604,49 +604,49 @@ export default function NHLShotMap() {
                 <rect x="10" y="10" width="620" height="420" rx="58" fill="#09091A" stroke="#252540" strokeWidth="2.5"/>
 
                 {/* Offensive zone subtle tint */}
-                <rect x="10" y="196" width="620" height="234" fill="#0B0B20" clipPath="url(#rink-clip)"/>
+                <rect x="10" y="10"  width="620" height="234" fill="#0B0B20" clipPath="url(#rink-clip)"/>
 
                 {/* Blue line */}
-                <line x1="10" y1="196" x2="630" y2="196" stroke="#1A2E6E" strokeWidth="8" clipPath="url(#rink-clip)"/>
+                <line x1="10" y1="244" x2="630" y2="244" stroke="#1A2E6E" strokeWidth="8" clipPath="url(#rink-clip)"/>
 
                 {/* Red center line dashed */}
-                <line x1="10" y1="110" x2="630" y2="110" stroke="#5A1010" strokeWidth="4" strokeDasharray="18,10" clipPath="url(#rink-clip)"/>
+                <line x1="10" y1="330" x2="630" y2="330" stroke="#5A1010" strokeWidth="4" strokeDasharray="18,10" clipPath="url(#rink-clip)"/>
 
                 {/* Goal line */}
-                <line x1="60" y1="380" x2="580" y2="380" stroke="#5A1010" strokeWidth="2.5" clipPath="url(#rink-clip)"/>
+                <line x1="60" y1="60"  x2="580" y2="60"  stroke="#5A1010" strokeWidth="2.5" clipPath="url(#rink-clip)"/>
 
                 {/* Goal crease fill */}
-                <path d="M 272 380 A 48 36 0 0 1 368 380 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
+                <path d="M 272 60 A 48 36 0 0 0 368 60 Z" fill="#0D1A3A" clipPath="url(#rink-clip)"/>
                 {/* Goal crease arc */}
-                <path d="M 272 380 A 48 36 0 0 1 368 380" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
+                <path d="M 272 60 A 48 36 0 0 0 368 60" fill="none" stroke="#1A2E6E" strokeWidth="2" clipPath="url(#rink-clip)"/>
                 {/* Offensive zone faceoff circles with hash marks */}
                 {[168, 472].map(cx => (
                   <g key={cx} clipPath="url(#rink-clip)">
-                    <circle cx={cx} cy="300" r="58" fill="none" stroke="#1E1040" strokeWidth="2"/>
-                    <circle cx={cx} cy="300" r="4" fill="#2A1050"/>
+                    <circle cx={cx} cy="140" r="58" fill="none" stroke="#1E1040" strokeWidth="2"/>
+                    <circle cx={cx} cy="140" r="4" fill="#2A1050"/>
                     {[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sy],i) => (
-                      <line key={i} x1={cx+sx*38} y1={300+sy*42} x2={cx+sx*50} y2={300+sy*42} stroke="#1E1040" strokeWidth="1.5"/>
+                      <line key={i} x1={cx+sx*38} y1={140+sy*42} x2={cx+sx*50} y2={140+sy*42} stroke="#1E1040" strokeWidth="1.5"/>
                     ))}
                     {[[-1,-1],[1,-1],[-1,1],[1,1]].map(([sx,sy],i) => (
-                      <line key={"v"+i} x1={cx+sx*42} y1={300+sy*38} x2={cx+sx*42} y2={300+sy*50} stroke="#1E1040" strokeWidth="1.5"/>
+                      <line key={"v"+i} x1={cx+sx*42} y1={140+sy*38} x2={cx+sx*42} y2={140+sy*50} stroke="#1E1040" strokeWidth="1.5"/>
                     ))}
                   </g>
                 ))}
 
                 {/* Neutral zone faceoff dots */}
                 {[168, 472].map(cx => (
-                  <circle key={"nz"+cx} cx={cx} cy="158" r="4" fill="#1E1040" clipPath="url(#rink-clip)"/>
+                  <circle key={"nz"+cx} cx={cx} cy="282" r="4" fill="#1E1040" clipPath="url(#rink-clip)"/>
                 ))}
 
                 {/* Center ice circle + dot */}
-                <circle cx="320" cy="110" r="46" fill="none" stroke="#1A2E6E" strokeWidth="1.5" clipPath="url(#rink-clip)"/>
-                <circle cx="320" cy="110" r="4" fill="#1A2E6E" clipPath="url(#rink-clip)"/>
+                <circle cx="320" cy="330" r="46" fill="none" stroke="#1A2E6E" strokeWidth="1.5" clipPath="url(#rink-clip)"/>
+                <circle cx="320" cy="330" r="4" fill="#1A2E6E" clipPath="url(#rink-clip)"/>
 
                 {/* Boards outline on top */}
                 <rect x="10" y="10" width="620" height="420" rx="58" fill="none" stroke="#2A2A48" strokeWidth="3"/>
 
                 {/* Zone label */}
-                <text x="320" y="26" textAnchor="middle" fill="#1C1C34" fontSize="7" fontFamily="DM Mono" letterSpacing="4">ATTACKING ZONE</text>
+                <text x="320" y="420" textAnchor="middle" fill="#1C1C34" fontSize="7" fontFamily="DM Mono" letterSpacing="4">ATTACKING ZONE</text>
 
                 {/* Heat zones rendered over rink markings */}
                 {details.map(zone => {
