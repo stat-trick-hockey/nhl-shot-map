@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-03-02T18:21:20.512Z",
+  "fetchedAt": "2026-03-03T01:26:55.374Z",
   "teams": [
     {
       "id": 1,
@@ -25734,19 +25734,19 @@
         "name": "DeBrincat",
         "firstName": "Alex",
         "playerId": 8479337,
-        "val": 209
+        "val": 212
       },
       "goals": {
         "name": "DeBrincat",
         "firstName": "Alex",
         "playerId": 8479337,
-        "val": 30
+        "val": 31
       },
       "pctg": {
         "name": "van Riemsdyk",
         "firstName": "James",
         "playerId": 8474037,
-        "val": 16.9
+        "val": 16.7
       }
     },
     "18_20252026_2": {
@@ -25754,7 +25754,7 @@
         "name": "Forsberg",
         "firstName": "Filip",
         "playerId": 8476887,
-        "val": 181
+        "val": 187
       },
       "goals": {
         "name": "Stamkos",
