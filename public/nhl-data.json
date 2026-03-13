@@ -1,5 +1,5 @@
 {
-  "fetchedAt": "2026-03-13T08:30:29.244Z",
+  "fetchedAt": "2026-03-13T19:36:15.458Z",
   "teams": [
     {
       "id": 1,
@@ -25674,7 +25674,7 @@
         "name": "Kucherov",
         "firstName": "Nikita",
         "playerId": 8476453,
-        "val": 175
+        "val": 176
       },
       "goals": {
         "name": "Kucherov",
@@ -25686,7 +25686,7 @@
         "name": "Kucherov",
         "firstName": "Nikita",
         "playerId": 8476453,
-        "val": 19.4
+        "val": 19.3
       }
     },
     "15_20252026_2": {
