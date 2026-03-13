@@ -894,7 +894,7 @@ export default function NHLShotMap() {
                 );
               })}
               <div style={{fontSize:'7px',letterSpacing:'1px',color:'#252535',marginTop:'2px',textAlign:'right'}}>
-                RANK AMONG 32 TEAMS · LOWER = BETTER
+                RANK AMONG 32 TEAMS · #1 = BEST
               </div>
             </div>
           );
